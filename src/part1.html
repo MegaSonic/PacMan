@@ -67,17 +67,28 @@ Pacman.prototype = {
         text = game.add.text(game.world.centerX, game.world.centerY, "Here's some text", { font: "65px Arial", fill: "#ff0044", align: "center" });
 
         this.load.image('dot', 'assets/dot.png');
+
+        /*
+
         this.load.image('tiles', 'assets/pacman-tiles.png');
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
 
+        */
+
+        
+        this.load.image('tiles', 'assets/tile_set.png');
+        this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
+        this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
+        
 
     },
 
     create: function () {
 
         this.map = this.add.tilemap('map');
-        this.map.addTilesetImage('pacman-tiles', 'tiles');
+        
+        this.map.addTilesetImage('map', 'tiles');
         this.layer = this.map.createLayer('Pacman');
         this.dots = this.add.physicsGroup();
         this.map.createFromTiles(7, this.safetile, 'dot', this.layer, this.dots);
