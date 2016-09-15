@@ -1,0 +1,100 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Pacman</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+        }
+    </style>
+    <script src="//cdn.jsdelivr.net/phaser/2.2.2/phaser.min.js"></script>
+</head>
+<body>
+
+    <script type="text/javascript">
+
+        var game = new Phaser.Game(900, 800, Phaser.AUTO);
+
+var Pacman = function (game) {
+
+    this.map = null;
+    this.layer = null;
+    this.pacman = null;
+
+    this.safetile = 14;
+    this.gridsize = 16;
+
+    this.speed = 150;
+    this.threshold = 3;
+
+    this.marker = new Phaser.Point();
+    this.turnPoint = new Phaser.Point();
+
+    this.directions = [null, null, null, null, null];
+    this.opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
+
+    this.current = Phaser.NONE;
+    this.turning = Phaser.NONE;
+
+};
+
+var text;
+
+Pacman.prototype = {
+
+    init: function() {
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.pageAlignHorizontally = true;
+        this.scale.pageAlignVertically = true;
+        Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
+        this.physics.startSystem(Phaser.Physics.ARCADE);
+    },
+
+
+
+    preload: function () {
+
+        /*
+        game.load.image('tiles', '../assets/tile_set.png');
+        game.load.tilemap('map', '../assets/maze.json', null, Phaser.Tilemap.TILED_JSON);
+        
+        text.anchor.setTo(0.5, 0.5);
+        */
+
+        text = game.add.text(game.world.centerX, game.world.centerY, "Here's some text", { font: "65px Arial", fill: "#ff0044", align: "center" });
+
+        this.load.image('dot', 'assets/dot.png');
+        this.load.image('tiles', 'assets/pacman-tiles.png');
+        this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
+        this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
+
+
+    },
+
+    create: function () {
+
+        this.map = this.add.tilemap('map');
+        this.map.addTilesetImage('pacman-tiles', 'tiles');
+        this.layer = this.map.createLayer('Pacman');
+        this.dots = this.add.physicsGroup();
+        this.map.createFromTiles(7, this.safetile, 'dot', this.layer, this.dots);
+        //  The dots will need to be offset by 6px to put them back in the middle of the grid
+        this.dots.setAll('x', 6, false, false, 1);
+        this.dots.setAll('y', 6, false, false, 1);
+
+    },
+
+    update: function () {
+
+    }
+}
+
+game.state.add('Game', Pacman, true);
+
+    </script>
+
+</body>
+</html>
