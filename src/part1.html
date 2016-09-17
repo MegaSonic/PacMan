@@ -17,10 +17,7 @@
     <script type="text/javascript">
 
         var game = new Phaser.Game(900, 800, Phaser.AUTO);
-var map;
-	var layer;
-		
-		
+
 var Pacman = function (game) {
 
     this.map = null;
@@ -79,9 +76,9 @@ Pacman.prototype = {
 
         */
 
-        game.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
-        game.load.image('tiles', 'assets/tile_set.png');
-        game.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
+        this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
+        this.load.image('tiles', 'assets/tile_set.png');
+        this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         // this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
         
 
@@ -91,11 +88,11 @@ Pacman.prototype = {
 	
     create: function () {
 
-	game.stage.backgroundColor = '#787878';
-		map = game.add.tilemap('map');
-        map.addTilesetImage('pacman', 'tiles');
-        layer = map.createLayer('Tile Layer 1');
-		layer.resizeWorld();
+		this.stage.backgroundColor = '#787878';
+		this.map = this.add.tilemap('map');
+        this.map.addTilesetImage('pacman', 'tiles');
+        this.layer = this.map.createLayer('Tile Layer 1');
+		this.layer.resizeWorld();
 		
         // this.dots = this.add.physicsGroup();
         // this.map.createFromTiles(7, this.safetile, 'dot', this.layer, this.dots);
