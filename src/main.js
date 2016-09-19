@@ -61,6 +61,7 @@ Pacman.prototype = {
         this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', 'assets/tile_set.png');
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
+        this.load.image('ghost', 'assets/ghost.png');
         // this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
 
 
@@ -93,6 +94,8 @@ Pacman.prototype = {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.pacman.play('munch');
         this.move(Phaser.RIGHT);
+
+        this.add.sprite(0, 0, 'ghost');
     },
 
     checkKeys: function () {
@@ -119,9 +122,12 @@ Pacman.prototype = {
         // NOTE: The Index != safetile part is making it so that pacman can't turn when on white tiles.
         // Change this line to give more options for safe tiles, or might have to redo parts of tilemap.
         if (this.turning === turnTo || this.directions[turnTo] === null || this.directions[turnTo].index !== this.safetile) {
-            //  Invalid direction if they're already set to turn that way
-            //  Or there is no tile there, or the tile isn't index 1 (a floor tile)
-            return;
+            if (this.directions[turnTo].index !== 8) {
+                 //  Invalid direction if they're already set to turn that way
+                 //  Or there is no tile there, or the tile isn't index 1 (a floor tile)
+                return;
+            }
+           
         }
         //  Check if they want to turn around and can
         if (this.current === this.opposites[turnTo]) {
