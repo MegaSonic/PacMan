@@ -11,6 +11,7 @@ var Pacman = function (game) {
 
     this.speed = 175;
     this.threshold = 6;
+    this.lives = 3;
 
     this.marker = new Phaser.Point();
     this.turnPoint = new Phaser.Point();
@@ -26,6 +27,8 @@ var Pacman = function (game) {
 var score = 0;
 var text;
 var textGroup;
+var livesText;
+var dieButton;
 
 Pacman.prototype = {
 
@@ -35,6 +38,7 @@ Pacman.prototype = {
         this.scale.pageAlignVertically = true;
         Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
         this.physics.startSystem(Phaser.Physics.ARCADE);
+        
 		
     },
 
@@ -50,6 +54,7 @@ Pacman.prototype = {
         */
 
         text = game.add.text(0, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
+        livesText = game.add.text(game.world.width - 100, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
 
         this.load.image('dot', 'assets/dot.png');
 
@@ -95,6 +100,9 @@ Pacman.prototype = {
         this.physics.arcade.enable(this.pacman);
         this.pacman.body.setSize(24, 24, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
+        dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        // dieButton.onDown.add(die, this);
+
         this.pacman.play('munch');
         this.move(Phaser.RIGHT);
 
@@ -105,6 +113,10 @@ Pacman.prototype = {
     },
 
     checkKeys: function () {
+        if (dieButton.isDown) {
+            this.die();
+        }
+
         if (this.cursors.left.isDown && this.current !== Phaser.LEFT) {
             this.checkDirection(Phaser.LEFT);
         }
@@ -195,6 +207,21 @@ Pacman.prototype = {
         }
 		score += 10;
 		text.text = score;
+    },
+
+    die: function () {
+        this.lives--;
+        livesText.text = this.lives;
+        if (this.lives <= 0) {
+            textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
+            this.pacman.kill();
+        }
+        else {
+            this.dots.callAll('revive');
+            this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
+            this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
+            this.move(Phaser.RIGHT);
+        }
     },
 
     update: function () {
