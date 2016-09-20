@@ -1,10 +1,23 @@
 
 var game = new Phaser.Game(900, 800, Phaser.AUTO);
 
+var map, mapLayer;
+
+var score = 0;
+var text;
+var textGroup;
+var livesText;
+var dieButton;
+
+var enemies;
+
+var pinky;
+
+
 var Pacman = function (game) {
 
     this.map = null;
-    this.layer = null;
+    mapLayer = null;
     this.pacman = null;
     this.ghost1 = null;
     this.guard = null;
@@ -33,15 +46,6 @@ var Pacman = function (game) {
 
 };
 
-var score = 0;
-var text;
-var textGroup;
-var livesText;
-var dieButton;
-
-var enemies;
-
-var pinky;
 
 Pacman.prototype = {
 
@@ -94,22 +98,22 @@ Pacman.prototype = {
     create: function () {
 
         this.stage.backgroundColor = '#787878';
-        this.map = this.add.tilemap('map');
-        this.map.addTilesetImage('pacman', 'tiles');
-        this.layer = this.map.createLayer('Tile Layer 1');
-        // this.layer.resizeWorld();
+        map = game.add.tilemap('map');
+        map.addTilesetImage('pacman', 'tiles');
+        mapLayer = map.createLayer('Tile Layer 1');
+        mapLayer.resizeWorld();
 
         this.dots = this.add.physicsGroup();
-        this.map.createFromTiles(3, this.safetile, 'dot', this.layer, this.dots);
+        map.createFromTiles(3, this.safetile, 'dot', mapLayer, this.dots);
 
         //  The dots will need to be offset by 12px to put them back in the middle of the grid
         this.dots.setAll('x', 12, false, false, 1);
         this.dots.setAll('y', 12, false, false, 1);
 		
 		this.stairs = this.add.physicsGroup();
-		this.map.createFromTiles(6, 6, 'dot', this.layer, this.stairs);
+		map.createFromTiles(6, 6, 'dot', mapLayer, this.stairs);
 
-        this.map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, this.layer);
+        map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'pacman', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
@@ -118,7 +122,7 @@ Pacman.prototype = {
         this.pacman.body.setSize(24, 24, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
         dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        // dieButton.onDown.add(die, this);
+        // dieButton.onDown.add(die, this); 
 
         this.pacman.play('munch');
         this.move(Phaser.RIGHT);
@@ -136,9 +140,11 @@ Pacman.prototype = {
 		enemies = this.add.group();
 
 		pinky = new Guard(game, 14, 7, 'pinky', 3, 1);
+		pinky.anchor.set(0.5);
+		enemies.add(pinky);
 
 		enemies.forEach(function (ghost) {
-		    ghost.move(Utils.Left);
+		    ghost.move(Utilities.Right);
 		}, this);
     },
 
@@ -300,11 +306,11 @@ Pacman.prototype = {
     update: function () {
 
         enemies.forEach(function (ghost) {
-            this.game.physics.arcade.collide(ghost, this.layer, ghostCollide);
+           this.game.physics.arcade.collide(ghost, mapLayer, ghostCollide);
         }, this);
 
-        this.physics.arcade.collide(this.pacman, this.layer);
-        this.game.physics.arcade.collide(this.guard, this.layer);
+        this.physics.arcade.collide(this.pacman, mapLayer);
+        this.game.physics.arcade.collide(this.guard, mapLayer);
         this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
 		
 		if (this.physics.arcade.overlap(this.pacman, this.stairs)) {
@@ -318,10 +324,10 @@ Pacman.prototype = {
         this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
         this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
         //  Update our grid sensors
-        this.directions[1] = this.map.getTileLeft(this.layer.index, this.marker.x, this.marker.y);
-        this.directions[2] = this.map.getTileRight(this.layer.index, this.marker.x, this.marker.y);
-        this.directions[3] = this.map.getTileAbove(this.layer.index, this.marker.x, this.marker.y);
-        this.directions[4] = this.map.getTileBelow(this.layer.index, this.marker.x, this.marker.y);
+        this.directions[1] = map.getTileLeft(mapLayer.index, this.marker.x, this.marker.y);
+        this.directions[2] = map.getTileRight(mapLayer.index, this.marker.x, this.marker.y);
+        this.directions[3] = map.getTileAbove(mapLayer.index, this.marker.x, this.marker.y);
+        this.directions[4] = map.getTileBelow(mapLayer.index, this.marker.x, this.marker.y);
         this.checkKeys();
         if (this.turning !== Phaser.NONE) {
             this.turn();
@@ -330,10 +336,10 @@ Pacman.prototype = {
         this.ghostmarker.x = this.math.snapToFloor(Math.floor(this.guard.x), this.gridsize) / this.gridsize;
         this.ghostmarker.y = this.math.snapToFloor(Math.floor(this.guard.y), this.gridsize) / this.gridsize;
 
-        this.guarddirections[Utilities.Up] = this.map.getTileAbove(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Left] = this.map.getTileLeft(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Down] = this.map.getTileBelow(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Right] = this.map.getTileRight(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Up] = map.getTileAbove(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Left] = map.getTileLeft(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Down] = map.getTileBelow(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Right] = map.getTileRight(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
 
         for (var i = Utilities.Up; i < 4;) {
             if (i !== this.comingFrom && this.guarddirections[i].index === this.safetile) {

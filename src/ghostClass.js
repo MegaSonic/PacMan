@@ -1,9 +1,8 @@
 
-
 var GhostMode = { Scared: 0, Chase: 1, Scatter: 2, Killed: 3, BackToNormal: 4 };
 
 function Ghost(game, x, y, image, targetX, targetY){
-    Phaser.Sprite.call(this, game, Utilities.TILE_SIZE * x, Utilities.TILE_SIZE * y, image);
+    Phaser.Sprite.call(this, game, Utilities.TILE_SIZE * x + (Utilities.TILE_SIZE) / 2, Utilities.TILE_SIZE * y + (Utilities.TILE_SIZE) / 2, image);
 	
     game.physics.enable(this, Phaser.Physics.ARCADE);
     this.enableBody = true;
@@ -18,10 +17,10 @@ function Ghost(game, x, y, image, targetX, targetY){
     this.directions = [null, null, null, null]
     this.distance = [null, null, null, null];
 	
-    this.speedModifiers = [0.6,0.95,0.95,0.95,0.95];
+    //this.speedModifiers = [0.6,0.95,0.95,0.95,0.95];
 	
-    this.mode = GhostMode.Scatter;
-    this.modeBeforeScared = GhostMode.Scatter;
+    //this.mode = GhostMode.Scatter;
+    //this.modeBeforeScared = GhostMode.Scatter;
 	
     this.startingTile = new Phaser.Point(x,y);
 };
@@ -29,28 +28,28 @@ function Ghost(game, x, y, image, targetX, targetY){
 Ghost.prototype = Object.create(Phaser.Sprite.prototype);
 Ghost.prototype.constructor = Ghost;
 
-Ghost.prototype.respawnTarget = new Phaser.Point(13,11);
+//Ghost.prototype.respawnTarget = new Phaser.Point(13,11);
 
 Ghost.prototype.move = function(direction){
     if(direction === Utilities.Up)
     {
-        this.body.velocity.y = -(Utilities.Speed * this.speedModifiers[this.mode]);
+        this.body.velocity.y = -(Utilities.Speed);
         this.comingFrom = Utilities.Down;
 		
     }
     else if(direction === Utilities.Down)
     {
-        this.body.velocity.y = (Utilities.Speed * this.speedModifiers[this.mode]);
+        this.body.velocity.y = (Utilities.Speed);
         this.comingFrom = Utilities.Up;
     }
     else if(direction === Utilities.Left)
     {
-        this.body.velocity.x = -(Utilities.Speed * this.speedModifiers[this.mode]);
+        this.body.velocity.x = -(Utilities.Speed);
         this.comingFrom = Utilities.Right;
     }
     else if(direction === Utilities.Right)
     {
-        this.body.velocity.x = (Utilities.Speed * this.speedModifiers[this.mode]);
+        this.body.velocity.x = (Utilities.Speed);
         this.comingFrom = Utilities.Left;
     }
 };
