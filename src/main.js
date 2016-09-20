@@ -9,8 +9,8 @@ var Pacman = function (game) {
     this.safetile = 3;
     this.gridsize = 24;
 
-    this.speed = 150;
-    this.threshold = 3;
+    this.speed = 175;
+    this.threshold = 6;
 
     this.marker = new Phaser.Point();
     this.turnPoint = new Phaser.Point();
@@ -23,7 +23,9 @@ var Pacman = function (game) {
 
 };
 
+var score = 0;
 var text;
+var textGroup;
 
 Pacman.prototype = {
 
@@ -33,6 +35,7 @@ Pacman.prototype = {
         this.scale.pageAlignVertically = true;
         Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
         this.physics.startSystem(Phaser.Physics.ARCADE);
+		
     },
 
 
@@ -46,7 +49,7 @@ Pacman.prototype = {
         text.anchor.setTo(0.5, 0.5);
         */
 
-        text = game.add.text(game.world.centerX, game.world.centerY, "Here's some text", { font: "65px Arial", fill: "#ff0044", align: "center" });
+        text = game.add.text(0, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
 
         this.load.image('dot', 'assets/dot.png');
 
@@ -96,6 +99,9 @@ Pacman.prototype = {
         this.move(Phaser.RIGHT);
 
         this.add.sprite(0, 0, 'ghost');
+		
+		textGroup = game.add.group();
+		textGroup.add(text);
     },
 
     checkKeys: function () {
@@ -187,6 +193,8 @@ Pacman.prototype = {
         if (this.dots.total === 0) {
             this.dots.callAll('revive');
         }
+		score += 10;
+		text.text = score;
     },
 
     update: function () {
