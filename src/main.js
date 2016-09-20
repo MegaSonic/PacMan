@@ -5,6 +5,10 @@ var Pacman = function (game) {
     this.map = null;
     this.layer = null;
     this.pacman = null;
+    this.ghost1 = null;
+    this.guard = null;
+    this.comingFrom = Utilities.Right;
+
 
     this.safetile = 3;
     this.gridsize = 24;
@@ -16,9 +20,11 @@ var Pacman = function (game) {
 	this.justTeleported = false;
 	
     this.marker = new Phaser.Point();
+    this.ghostmarker = new Phaser.Point();
     this.turnPoint = new Phaser.Point();
 
     this.directions = [null, null, null, null, null];
+    this.guarddirections = [null, null, null, null, null];
     this.opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
     this.current = Phaser.NONE;
@@ -31,6 +37,9 @@ var text;
 var textGroup;
 var livesText;
 var dieButton;
+
+var enemies;
+
 
 Pacman.prototype = {
 
@@ -111,8 +120,13 @@ Pacman.prototype = {
         this.pacman.play('munch');
         this.move(Phaser.RIGHT);
 
-        this.add.sprite(0, 0, 'ghost');
-		
+        this.guard = this.add.sprite((this.gridsize * 3) + 12, (this.gridsize * 1) + 12, 'ghost',0);
+        this.guard.anchor.set(0.5);
+       
+        this.game.physics.enable(this.guard, Phaser.Physics.ARCADE);
+        this.guard.body.setSize(24, 24, 0, 0);
+        this.guard.body.velocity.x = this.speed;
+
 		textGroup = game.add.group();
 		textGroup.add(text);
     },
@@ -205,6 +219,26 @@ Pacman.prototype = {
         this.current = direction;
     },
 
+    ghostmove: function (direction) {
+        if (direction === Utilities.Up) {
+            this.guard.body.velocity.y = -(Utilities.Speed);
+            this.comingFrom = Utilities.Down;
+
+        }
+        else if (direction === Utilities.Down) {
+            this.guard.body.velocity.y = (Utilities.Speed);
+            this.comingFrom = Utilities.Up;
+        }
+        else if (direction === Utilities.Left) {
+            this.guard.body.velocity.x = -(Utilities.Speed);
+            this.comingFrom = Utilities.Right;
+        }
+        else if (direction === Utilities.Right) {
+            this.guard.body.velocity.x = (Utilities.Speed);
+            this.comingFrom = Utilities.Left;
+        }
+    },
+
     eatDot: function (pacman, dot) {
         dot.kill();
         if (this.dots.total === 0) {
@@ -243,10 +277,17 @@ Pacman.prototype = {
 			}
 		}
 	},
-	
+
+    ghostAI: function () {
+
+
+
+    },
+
     update: function () {
 
         this.physics.arcade.collide(this.pacman, this.layer);
+        this.game.physics.arcade.collide(this.guard, this.layer);
         this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
 		
 		if (this.physics.arcade.overlap(this.pacman, this.stairs)) {
@@ -268,7 +309,29 @@ Pacman.prototype = {
         if (this.turning !== Phaser.NONE) {
             this.turn();
         }
+
+        this.ghostmarker.x = this.math.snapToFloor(Math.floor(this.guard.x), this.gridsize) / this.gridsize;
+        this.ghostmarker.y = this.math.snapToFloor(Math.floor(this.guard.y), this.gridsize) / this.gridsize;
+
+        this.guarddirections[Utilities.Up] = this.map.getTileAbove(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Left] = this.map.getTileLeft(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Down] = this.map.getTileBelow(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.guarddirections[Utilities.Right] = this.map.getTileRight(this.map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+
+        for (var i = Utilities.Up; i < 4;) {
+            if (i !== this.comingFrom && this.guarddirections[i].index === this.safetile) {
+                this.ghostmove(i);
+                break;
+            }
+            else {
+                ++i;
+            }
+        }
+
     }
 }
+
+
+
 
 game.state.add('Game', Pacman, true);
