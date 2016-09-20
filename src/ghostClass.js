@@ -105,12 +105,6 @@ Ghost.prototype.updateTarget = function(player, additionalPoint)
     }
 };
 
-Ghost.prototype.ChasingTarget = function(player, additionalPoint)
-{
-    console.log("Ghost function");
-    this.target.x = Utilities.pixelsToTiles(player.x);
-    this.target.y = Utilities.pixelsToTiles(player.y);
-}
 
 Ghost.prototype.decideDirection = function(map){
 
@@ -177,23 +171,6 @@ Ghost.prototype.collide = function(){
 
 };
 
-Ghost.prototype.changeMode = function(newMode, texture){
-	
-    if(newMode === GhostMode.Scared)
-        this.modeBeforeScared = this.mode;
-	
-    if(newMode === GhostMode.BackToNormal)
-        this.mode = this.modeBeforeScared;
-    else
-        this.mode = newMode;
-	
-	
-    if(texture)
-        this.loadTexture(texture);
-		
-    this.updateVelocity();
-};
-
 
 Ghost.prototype.reverse = function(){
     this.body.velocity.x *= -1;
@@ -207,26 +184,5 @@ Ghost.prototype.reverse = function(){
         this.comingFrom = Utilities.Right;
     else if(this.comingFrom === Utilities.Right)
         this.comingFrom = Utilities.Left;
-};
-
-Ghost.prototype.utilizeSpecialPoint = function(map){
-    if(this.mode === GhostMode.Killed && Phaser.Point.equals(this.marker,this.respawnTarget))
-    {
-        this.respawn();
-    }
-    else if(this.marker.y === 11 && (this.marker.x === 12))
-    {		
-        this.resetPositionToPoint(this.marker);
-		
-        if(this.mode === GhostMode.Scared)
-            this.makeDecision(null,null,map);
-        else
-        {
-            if(this.comingFrom === Utilities.Left)
-                this.move(Utilities.Right);
-            else
-                this.move(Utilities.Left);
-        }
-    }
 };
 

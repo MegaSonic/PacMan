@@ -83,7 +83,7 @@ Pacman.prototype = {
         this.load.image('tiles', 'assets/tile_set.png');
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
-        this.load.image('pinky', 'assets/pinky.png');
+        game.load.image('pinky', 'assets/pinky.png');
         // this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
 
 
