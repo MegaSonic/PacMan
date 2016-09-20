@@ -262,18 +262,20 @@ Pacman.prototype = {
     },
 
     die: function () {
-        this.lives--;
-        livesText.text = this.lives;
+        
         if (this.lives <= 0) {
-            textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
+            game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
+            // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
             this.pacman.kill();
         }
         else {
+            this.lives--;
             this.dots.callAll('revive');
             this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
             this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
             this.move(Phaser.RIGHT);
         }
+        livesText.text = this.lives;
     },
 
 	teleport: function () {
