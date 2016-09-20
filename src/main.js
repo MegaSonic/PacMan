@@ -1,3 +1,4 @@
+
 var game = new Phaser.Game(900, 800, Phaser.AUTO);
 
 var Pacman = function (game) {
@@ -40,6 +41,7 @@ var dieButton;
 
 var enemies;
 
+var pinky;
 
 Pacman.prototype = {
 
@@ -81,6 +83,7 @@ Pacman.prototype = {
         this.load.image('tiles', 'assets/tile_set.png');
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
+        this.load.image('pinky', 'assets/pinky.png');
         // this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
 
 
@@ -129,6 +132,14 @@ Pacman.prototype = {
 
 		textGroup = game.add.group();
 		textGroup.add(text);
+
+		enemies = this.add.group();
+
+		pinky = new Guard(game, 14, 7, 'pinky', 3, 1);
+
+		enemies.forEach(function (ghost) {
+		    ghost.move(Utils.Left);
+		}, this);
     },
 
     checkKeys: function () {
@@ -219,6 +230,8 @@ Pacman.prototype = {
         this.current = direction;
     },
 
+    
+
     ghostmove: function (direction) {
         if (direction === Utilities.Up) {
             this.guard.body.velocity.y = -(Utilities.Speed);
@@ -286,6 +299,10 @@ Pacman.prototype = {
 
     update: function () {
 
+        enemies.forEach(function (ghost) {
+            this.game.physics.arcade.collide(ghost, this.layer, ghostCollide);
+        }, this);
+
         this.physics.arcade.collide(this.pacman, this.layer);
         this.game.physics.arcade.collide(this.guard, this.layer);
         this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
@@ -331,6 +348,10 @@ Pacman.prototype = {
     }
 }
 
+function ghostCollide(ghost, tile) {
+    ghost.updateDirections(map);
+    ghost.collide();
+}
 
 
 
