@@ -50,7 +50,7 @@ var Pacman = function (game) {
 Pacman.prototype = {
 
     init: function () {
-        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        // this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
         Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
@@ -63,33 +63,16 @@ Pacman.prototype = {
 
     preload: function () {
 
-        /*
-        game.load.image('tiles', '../assets/tile_set.png');
-        game.load.tilemap('map', '../assets/maze.json', null, Phaser.Tilemap.TILED_JSON);
-        
-        text.anchor.setTo(0.5, 0.5);
-        */
-
         text = game.add.text(0, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
         livesText = game.add.text(game.world.width - 100, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
 
         this.load.image('dot', 'assets/dot.png');
-
-        /*
-
-        this.load.image('tiles', 'assets/pacman-tiles.png');
-        this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
-        this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
-
-        */
 
         this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', 'assets/tile_set.png');
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
         game.load.image('pinky', 'assets/pinky.png');
-        // this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
-
 
     },
 
