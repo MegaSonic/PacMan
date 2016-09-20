@@ -13,6 +13,8 @@ var Pacman = function (game) {
     this.threshold = 6;
     this.lives = 3;
 
+	this.justTeleported = false;
+	
     this.marker = new Phaser.Point();
     this.turnPoint = new Phaser.Point();
 
@@ -91,6 +93,9 @@ Pacman.prototype = {
         //  The dots will need to be offset by 12px to put them back in the middle of the grid
         this.dots.setAll('x', 12, false, false, 1);
         this.dots.setAll('y', 12, false, false, 1);
+		
+		this.stairs = this.add.physicsGroup();
+		this.map.createFromTiles(6, 6, 'dot', this.layer, this.stairs);
 
         this.map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, this.layer);
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'pacman', 0);
@@ -224,10 +229,34 @@ Pacman.prototype = {
         }
     },
 
+	teleport: function () {
+		if (!this.justTeleported) {
+			if (this.pacman.x > game.world.centerX) {
+				this.pacman.x = (1 * this.gridsize) + this.gridsize / 2;
+				this.pacman.y = (16 * this.gridsize) + this.gridsize / 2;
+				this.move(Phaser.RIGHT);
+			}
+			else {
+				this.pacman.x = (29 * this.gridsize) + this.gridsize / 2;
+				this.pacman.y = (16 * this.gridsize) + this.gridsize / 2;
+				this.move(Phaser.LEFT);
+			}
+		}
+	},
+	
     update: function () {
 
         this.physics.arcade.collide(this.pacman, this.layer);
         this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
+		
+		if (this.physics.arcade.overlap(this.pacman, this.stairs)) {
+			this.teleport();
+		}
+		else {
+			this.justTeleported = false;
+		}
+
+
         this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
         this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
         //  Update our grid sensors
