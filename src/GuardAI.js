@@ -6,6 +6,6 @@ Guard.prototype = Object.create(Ghost.prototype);
 Guard.prototype.constructor = Guard;
 
 Guard.prototype.ChasingTarget = function (player, additionalPoint) {
-    this.target.x = Utils.pixelsToTiles(player.x);
-    this.target.y = Utils.pixelsToTiles(player.y);
+    this.target.x = Utilities.pixelsToTiles(player.x);
+    this.target.y = Utilities.pixelsToTiles(player.y);
 };
