@@ -39,6 +39,7 @@ var Pacman = function (game) {
 
     this.directions = [null, null, null, null, null];
     this.guarddirections = [null, null, null, null, null];
+    this.guardComingFrom = Utilities.Left;
     this.opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
     this.current = Phaser.NONE;
@@ -129,7 +130,19 @@ Pacman.prototype = {
 
 		pinky = new Guard(game, 14, 7, 'pinky', 3, 1);
 		pinky.anchor.set(0.5);
+		pinky.body.setSize(24, 24, 0, 0);
 		enemies.add(pinky);
+
+		decisionPoints = [new Phaser.Point(2, 1), new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1), new Phaser.Point(29, 1),
+	    new Phaser.Point(2, 4), new Phaser.Point(5, 4), new Phaser.Point(14, 4), new Phaser.Point(17, 4), new Phaser.Point(26, 4), new Phaser.Point(29, 4),
+	    new Phaser.Point(15, 5), new Phaser.Point(18, 5), new Phaser.Point(21, 5), new Phaser.Point(26, 5),
+	    new Phaser.Point(6, 8), new Phaser.Point(21, 8),
+	    new Phaser.Point(6, 14), new Phaser.Point(9, 14), new Phaser.Point(18, 14), new Phaser.Point(21, 14),
+	    new Phaser.Point(9, 17), new Phaser.Point(18, 17),
+	    new Phaser.Point(6, 20), new Phaser.Point(9, 20), new Phaser.Point(18, 20), new Phaser.Point(21, 20),
+	    new Phaser.Point(6, 23), new Phaser.Point(9, 23), new Phaser.Point(18, 23), new Phaser.Point(21, 23),
+	    new Phaser.Point(3, 26), new Phaser.Point(24, 26),
+	    new Phaser.Point(12, 29), new Phaser.Point(15, 29)];
 
         StartExit();
 
@@ -239,20 +252,20 @@ Pacman.prototype = {
     ghostmove: function (direction) {
         if (direction === Utilities.Up) {
             this.guard.body.velocity.y = -(Utilities.Speed);
-            this.comingFrom = Utilities.Down;
+            this.guardComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
             this.guard.body.velocity.y = (Utilities.Speed);
-            this.comingFrom = Utilities.Up;
+            this.guardComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
             this.guard.body.velocity.x = -(Utilities.Speed);
-            this.comingFrom = Utilities.Right;
+            this.guardComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
             this.guard.body.velocity.x = (Utilities.Speed);
-            this.comingFrom = Utilities.Left;
+            this.guardComingFrom = Utilities.Left;
         }
     },
 
@@ -343,16 +356,19 @@ Pacman.prototype = {
         this.guarddirections[Utilities.Down] = map.getTileBelow(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
         this.guarddirections[Utilities.Right] = map.getTileRight(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
 
-        for (var i = Utilities.Up; i < 4;) {
-            if (i !== this.comingFrom && this.guarddirections[i].index === this.safetile) {
-                this.ghostmove(i);
-                break;
-            }
-            else {
-                ++i;
+        if (this.guard.body.velocity.x === 0 && this.guard.body.velocity.y === 0) {
+
+            for (var i = Utilities.Up; i < 4;) {
+                if (i !== this.guardComingFrom){
+                    if (this.guarddirections[i].index === this.safetile || this.guarddirections[i].index === 8) {
+                        this.ghostmove(i);
+                        break;
+                    }
+                     
+                }
+                i++;
             }
         }
-
     }
 }
 
@@ -380,19 +396,17 @@ function Ghost(game, x, y, image, targetX, targetY){
     
     this.directions = [null, null, null, null]
     this.distance = [null, null, null, null];
+
+
     
-    //this.speedModifiers = [0.6,0.95,0.95,0.95,0.95];
-    
-    //this.mode = GhostMode.Scatter;
-    //this.modeBeforeScared = GhostMode.Scatter;
-    
+
     this.startingTile = new Phaser.Point(x,y);
 };
 
 Ghost.prototype = Object.create(Phaser.Sprite.prototype);
 Ghost.prototype.constructor = Ghost;
 
-//Ghost.prototype.respawnTarget = new Phaser.Point(13,11);
+
 
 Ghost.prototype.move = function(direction){
     if(direction === Utilities.Up)
