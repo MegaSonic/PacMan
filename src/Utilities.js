@@ -7,7 +7,7 @@ var Utilities = {
     Left: 1,
     Down: 2,
     Right: 3,
-    Speed: 90,
+    Speed: 160,
     arrayContains: function (array, object) {
         var i = array.length;
         while (i--) {

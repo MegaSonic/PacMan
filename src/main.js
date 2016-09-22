@@ -13,6 +13,17 @@ var enemies;
 
 var pinky;
 
+var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1),
+    new Phaser.Point(2, 4), new Phaser.Point(29, 4),
+    new Phaser.Point(8, 7), new Phaser.Point(11, 7), new Phaser.Point(14, 7), new Phaser.Point(17, 7), new Phaser.Point(20, 7), new Phaser.Point(23, 7),
+    new Phaser.Point(8, 10), new Phaser.Point(20, 10),
+    new Phaser.Point(14, 13), new Phaser.Point(17, 13),
+    new Phaser.Point(11, 19), new Phaser.Point(20, 19),
+    new Phaser.Point(8, 22), new Phaser.Point(11, 22), new Phaser.Point(20, 22), new Phaser.Point(23, 22),
+    new Phaser.Point(2, 24), new Phaser.Point(8, 24), new Phaser.Point(11, 24), new Phaser.Point(14, 24), new Phaser.Point(17, 24), new Phaser.Point(20, 24), new Phaser.Point(23, 24), new Phaser.Point(29, 24),
+    new Phaser.Point(2, 27), new Phaser.Point(7, 27), new Phaser.Point(11, 27), new Phaser.Point(14, 27), new Phaser.Point(17, 27), new Phaser.Point(20, 27), new Phaser.Point(25, 27), new Phaser.Point(29, 27),
+	new Phaser.Point(7, 31), new Phaser.Point(11, 31), new Phaser.Point(14, 31), new Phaser.Point(17, 31), new Phaser.Point(20, 31), new Phaser.Point(25, 31) ];
+
 
 var Pacman = function (game) {
 
@@ -29,6 +40,7 @@ var Pacman = function (game) {
 
     this.speed = 175;
     this.threshold = 6;
+    this.AIthreshold = 0.1;
     this.lives = 3;
 
 	this.justTeleported = false;
@@ -116,12 +128,12 @@ Pacman.prototype = {
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
 
-        this.guard = this.add.sprite((this.gridsize * 3) + 12, (this.gridsize * 1) + 12, 'ghost',0);
+        this.guard = this.add.sprite((this.gridsize * 14) + 12, (this.gridsize * 7) + 12, 'ghost',0);
         this.guard.anchor.set(0.5);
        
         this.game.physics.enable(this.guard, Phaser.Physics.ARCADE);
         this.guard.body.setSize(24, 24, 0, 0);
-        this.guard.body.velocity.x = this.speed;
+        this.guard.body.velocity.x = Utilities.Speed;
 
 		textGroup = game.add.group();
 		textGroup.add(text);
@@ -133,16 +145,7 @@ Pacman.prototype = {
 		pinky.body.setSize(24, 24, 0, 0);
 		enemies.add(pinky);
 
-		decisionPoints = [new Phaser.Point(2, 1), new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1), new Phaser.Point(29, 1),
-	    new Phaser.Point(2, 4), new Phaser.Point(5, 4), new Phaser.Point(14, 4), new Phaser.Point(17, 4), new Phaser.Point(26, 4), new Phaser.Point(29, 4),
-	    new Phaser.Point(15, 5), new Phaser.Point(18, 5), new Phaser.Point(21, 5), new Phaser.Point(26, 5),
-	    new Phaser.Point(6, 8), new Phaser.Point(21, 8),
-	    new Phaser.Point(6, 14), new Phaser.Point(9, 14), new Phaser.Point(18, 14), new Phaser.Point(21, 14),
-	    new Phaser.Point(9, 17), new Phaser.Point(18, 17),
-	    new Phaser.Point(6, 20), new Phaser.Point(9, 20), new Phaser.Point(18, 20), new Phaser.Point(21, 20),
-	    new Phaser.Point(6, 23), new Phaser.Point(9, 23), new Phaser.Point(18, 23), new Phaser.Point(21, 23),
-	    new Phaser.Point(3, 26), new Phaser.Point(24, 26),
-	    new Phaser.Point(12, 29), new Phaser.Point(15, 29)];
+		
 
         StartExit();
 
@@ -252,20 +255,20 @@ Pacman.prototype = {
     ghostmove: function (direction) {
         if (direction === Utilities.Up) {
             this.guard.body.velocity.y = -(Utilities.Speed);
-            this.guardComingFrom = Utilities.Down;
+            //this.guardComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
             this.guard.body.velocity.y = (Utilities.Speed);
-            this.guardComingFrom = Utilities.Up;
+            //this.guardComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
             this.guard.body.velocity.x = -(Utilities.Speed);
-            this.guardComingFrom = Utilities.Right;
+            //this.guardComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
             this.guard.body.velocity.x = (Utilities.Speed);
-            this.guardComingFrom = Utilities.Left;
+            //this.guardComingFrom = Utilities.Left;
         }
     },
 
@@ -311,11 +314,69 @@ Pacman.prototype = {
 		}
 	},
 
-    ghostAI: function () {
+	ghostAI: function () {
 
+	    this.ghostmarker.x = this.math.snapToFloor(Math.floor(this.guard.x), this.gridsize) / this.gridsize;
+	    this.ghostmarker.y = this.math.snapToFloor(Math.floor(this.guard.y), this.gridsize) / this.gridsize;
 
+	    this.guarddirections[Utilities.Up] = map.getTileAbove(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+	    this.guarddirections[Utilities.Left] = map.getTileLeft(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+	    this.guarddirections[Utilities.Down] = map.getTileBelow(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+	    this.guarddirections[Utilities.Right] = map.getTileRight(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
 
-    },
+	    if (this.guard.body.velocity.x === 0 && this.guard.body.velocity.y === 0) {
+
+	        for (var i = Utilities.Up; i < 4;) {
+	            if (i !== this.guardComingFrom) {
+	                if (this.guarddirections[i].index === this.safetile || this.guarddirections[i].index === 8) {
+	                    this.ghostmove(i);
+	                    break;
+	                }
+
+	            }
+	            i++;
+	        }
+	    }
+
+	    for (var i = 0; i < decisionPoints.length;) {
+
+	        if (this.math.fuzzyEqual(this.guard.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(this.guard.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
+	            var rand = Math.floor((Math.random() * 4) + 1)
+	            for (var k = 0; k < 4;) {
+	                if (rand % 4 !== this.guardComingFrom){
+	                    if (this.guarddirections[rand % 4].index === this.safetile || this.guarddirections[rand % 4].index === 8) {
+	                        this.ghostmove(rand % 4);
+	                        var done = true;
+	                        break;
+	                    }
+                     
+	                }
+	                rand++;
+	                k++;
+	            }
+           
+	            
+	        }
+	        i++;
+
+	        if (done) {
+	            done = false;
+	            break;
+	        }
+	    }
+	},
+
+	ghostUpdateDirection: function(){
+
+        if(this.guard.body.velocity.x > 0)
+            this.guardComingFrom = Utilities.Right;
+        else if(this.guard.body.velocity.x < 0)
+            this.guardComingFrom = Utilities.Left;
+        else if(this.guard.body.velocity.y > 0)
+            this.guardComingFrom = Utilities.Up;
+        else if(this.guard.body.velocity.y < 0)
+            this.guardComingFrom = Utilities.Down;
+	},
 
     update: function () {
 
@@ -348,27 +409,12 @@ Pacman.prototype = {
             this.turn();
         }
 
-        this.ghostmarker.x = this.math.snapToFloor(Math.floor(this.guard.x), this.gridsize) / this.gridsize;
-        this.ghostmarker.y = this.math.snapToFloor(Math.floor(this.guard.y), this.gridsize) / this.gridsize;
+        
 
-        this.guarddirections[Utilities.Up] = map.getTileAbove(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Left] = map.getTileLeft(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Down] = map.getTileBelow(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Right] = map.getTileRight(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        this.ghostAI();
+        this.ghostUpdateDirection();
 
-        if (this.guard.body.velocity.x === 0 && this.guard.body.velocity.y === 0) {
-
-            for (var i = Utilities.Up; i < 4;) {
-                if (i !== this.guardComingFrom){
-                    if (this.guarddirections[i].index === this.safetile || this.guarddirections[i].index === 8) {
-                        this.ghostmove(i);
-                        break;
-                    }
-                     
-                }
-                i++;
-            }
-        }
+        this.physics.arcade.overlap(this.pacman, this.guard, this.die, null, this);
     }
 }
 
