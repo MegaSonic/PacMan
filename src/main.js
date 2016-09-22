@@ -12,8 +12,11 @@ var changeButton;
 var tempDir;
 var counter = 0;
 var counter2 = 0;
+var counter3 = 0;
+var counter4 = 0;
 var powerCounter = 0;
 var poweredUp = false;
+var home = new Phaser.Point(15,17)
 
 
 var PlayerState = { MALE: false, FEMALE: true };
@@ -25,6 +28,28 @@ var chaser;
 var chaserdirections = [null, null, null, null, null];
 var chaserComingFrom = Utilities.Left;
 var chasermarker = new Phaser.Point();
+var chaserReturn = false;
+
+//RACER VARS
+var racer;
+var racerdirections = [null, null, null, null, null];
+var racerComingFrom = Utilities.Right;
+var racermarker = new Phaser.Point();
+var racerReturn = false;
+
+//TRACER VARS
+var tracer;
+var tracerdirections = [null, null, null, null, null];
+var tracerComingFrom = Utilities.Left;
+var tracermarker = new Phaser.Point();
+var tracerReturn = false;
+
+//CARIBOU
+var caribou;
+var cariboudirections = [null, null, null, null, null];
+var caribouComingFrom = Utilities.Right;
+var cariboumarker = new Phaser.Point();
+var caribouReturn = false;
 
 var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1),
     new Phaser.Point(2, 4), new Phaser.Point(29, 4),
@@ -41,8 +66,6 @@ var Pacman = function (game) {
 
     this.map = null;
     this.pacman = null;
-    this.ghost1 = null;
-    this.guard = null;
     this.comingFrom = Utilities.Right;
 
 
@@ -57,13 +80,9 @@ var Pacman = function (game) {
 	this.justTeleported = false;
 	
     this.marker = new Phaser.Point();
-    this.ghostmarker = new Phaser.Point();
     this.turnPoint = new Phaser.Point();
 
     this.directions = [null, null, null, null, null];
-    this.guarddirections = [null, null, null, null, null];
-    this.guardComingFrom = Utilities.Left;
-    this.ghostUpdate = false;
     this.opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
     this.current = Phaser.NONE;
@@ -124,6 +143,9 @@ Pacman.prototype = {
         this.stairs = this.add.physicsGroup();
         map.createFromTiles(6, 6, 'dot', mapLayer, this.stairs);
 
+        this.spray = this.add.physicsGroup();
+        map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
+
         map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
 
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
@@ -146,19 +168,35 @@ Pacman.prototype = {
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
 
-        this.guard = this.add.sprite((this.gridsize * 14) + 12, (this.gridsize * 7) + 12, 'ghost', 0);
-        this.guard.anchor.set(0.5);
 
-        this.game.physics.enable(this.guard, Phaser.Physics.ARCADE);
-        this.guard.body.setSize(24, 24, 0, 0);
-        this.guard.body.velocity.x = Utilities.Speed;
 
-        chaser = this.add.sprite((this.gridsize * 5) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
+        // GUARD 1
+        chaser = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 10) + 12, 'pinky', 0);
         chaser.anchor.set(0.5);
-
         this.game.physics.enable(chaser, Phaser.Physics.ARCADE);
         chaser.body.setSize(24, 24, 0, 0);
         chaser.body.velocity.x = Utilities.Speed;
+
+        // GUARD 2
+        racer = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 4) + 12, 'chaser', 0);
+        racer.anchor.set(0.5);
+        this.game.physics.enable(racer, Phaser.Physics.ARCADE);
+        racer.body.setSize(24, 24, 0, 0);
+        racer.body.velocity.x = -Utilities.Speed;
+
+        // GUARD 3
+        tracer = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
+        tracer.anchor.set(0.5);
+        this.game.physics.enable(tracer, Phaser.Physics.ARCADE);
+        tracer.body.setSize(24, 24, 0, 0);
+        tracer.body.velocity.x = Utilities.Speed;
+
+        // GUARD 4
+        caribou = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
+        caribou.anchor.set(0.5);
+        this.game.physics.enable(caribou, Phaser.Physics.ARCADE);
+        caribou.body.setSize(24, 24, 0, 0);
+        caribou.body.velocity.x = -Utilities.Speed;
 
         textGroup = game.add.group();
         textGroup.add(text);
@@ -262,30 +300,6 @@ Pacman.prototype = {
 
 
 
-    ghostmove: function (direction) {
-        if (direction === Utilities.Up) {
-            this.guard.body.velocity.y = -(Utilities.Speed);
-            this.guard.body.velocity.x = 0;
-            this.guardComingFrom = Utilities.Down;
-
-        }
-        else if (direction === Utilities.Down) {
-            this.guard.body.velocity.y = (Utilities.Speed);
-            this.guard.body.velocity.x = 0;
-            this.guardComingFrom = Utilities.Up;
-        }
-        else if (direction === Utilities.Left) {
-            this.guard.body.velocity.x = -(Utilities.Speed);
-            this.guard.body.velocity.y = 0;
-            this.guardComingFrom = Utilities.Right;
-        }
-        else if (direction === Utilities.Right) {
-            this.guard.body.velocity.x = (Utilities.Speed);
-            this.guard.body.velocity.y = 0;
-            this.guardComingFrom = Utilities.Left;
-        }
-    },
-
     eatDot: function (pacman, dot) {
         dot.kill();
         if (this.dots.total === 0) {
@@ -339,24 +353,26 @@ Pacman.prototype = {
         }
     },
 
+    //GUARD 1
+
     ghostAI: function () {
 
-        this.ghostmarker.x = this.math.snapToFloor(Math.floor(this.guard.x), this.gridsize) / this.gridsize;
-        this.ghostmarker.y = this.math.snapToFloor(Math.floor(this.guard.y), this.gridsize) / this.gridsize;
+        chasermarker.x = this.math.snapToFloor(Math.floor(chaser.x), this.gridsize) / this.gridsize;
+        chasermarker.y = this.math.snapToFloor(Math.floor(chaser.y), this.gridsize) / this.gridsize;
 
-        this.guarddirections[Utilities.Up] = map.getTileAbove(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Left] = map.getTileLeft(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Down] = map.getTileBelow(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
-        this.guarddirections[Utilities.Right] = map.getTileRight(map.getLayer(), this.ghostmarker.x, this.ghostmarker.y);
+        chaserdirections[Utilities.Up] = map.getTileAbove(map.getLayer(), chasermarker.x, chasermarker.y);
+        chaserdirections[Utilities.Left] = map.getTileLeft(map.getLayer(), chasermarker.x, chasermarker.y);
+        chaserdirections[Utilities.Down] = map.getTileBelow(map.getLayer(), chasermarker.x, chasermarker.y);
+        chaserdirections[Utilities.Right] = map.getTileRight(map.getLayer(), chasermarker.x, chasermarker.y);
 
 
         //STUCK IN A CORNER
-        if (this.guard.body.velocity.x === 0 && this.guard.body.velocity.y === 0) {
+        if (chaser.body.velocity.x === 0 && chaser.body.velocity.y === 0) {
 
             for (var i = Utilities.Up; i < 4;) {
-                if (i !== this.guardComingFrom) {
-                    if (this.guarddirections[i].index === this.safetile || this.guarddirections[i].index === 8) {
-                        this.ghostmove(i);
+                if (i !== chaserComingFrom) {
+                    if (chaserdirections[i].index === this.safetile || chaserdirections[i].index === 8) {
+                        this.chasermove(i);
                         break;
                     }
 
@@ -367,65 +383,115 @@ Pacman.prototype = {
 
         for (var i = 0; i < decisionPoints.length;) {
 
-            if (this.math.fuzzyEqual(this.guard.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(this.guard.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
-                var rand = Math.floor((Math.random() * 4) + 1)
+            if (this.math.fuzzyEqual(chaser.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(chaser.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
 
-                var xDiff = this.pacman.body.x - this.guard.body.x;
-                var yDiff = this.pacman.body.y - this.guard.body.y;
+                if (chaserReturn === true) {
 
-                if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125)
-                {
+                    var xDiff = Utilities.tileToPixels(home.x) - chaser.body.x;
+                    var yDiff = Utilities.tileToPixels(home.y) - chaser.body.y;
+
                     if (Math.abs(xDiff) > Math.abs(yDiff)) {
                         if (xDiff > 0) {
-                            if (this.guarddirections[3].index === this.safetile || this.guarddirections[3].index === 8) {
-                                this.ghostSetAndMove(i, 3);
+                            if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
+                                this.chaserSetAndMove(i, 3);
                                 counter = 10;
                                 var done = true;
-                                break;
+                                
                             }
                         }
                         else {
-                            if (this.guarddirections[1].index === this.safetile || this.guarddirections[1].index === 8) {
-                                this.ghostSetAndMove(i, 1);
+                            if (chaserdirections[1].index === this.safetile || chaserdirections[1].index === 8) {
+                                this.chaserSetAndMove(i, 1);
                                 counter = 10;
                                 var done = true;
-                                break;
+                               
+                            }
+                        }
+                    }
+                        else {
+                             if (yDiff > 0) {
+                                if (chaserdirections[2].index === this.safetile || chaserdirections[2].index === 8) {
+                                    this.chaserSetAndMove(i, 2);
+                                    counter = 10;
+                                    var done = true;
+      
+                                }
+                            }
+                        else {
+                             if (chaserdirections[0].index === this.safetile || chaserdirections[0].index === 8) {
+                                this.chaserSetAndMove(i, 0);
+                                counter = 10;
+                                var done = true;
+                            }
+                        }
+                    }
+
+                    if (this.math.fuzzyEqual(chaser.body.x, Utilities.tileToPixels(home.x), this.AIthreshold) && this.math.fuzzyEqual(chaser.body.y, Utilities.tileToPixels(home.y +1), this.AIthreshold)) {
+                        chaserReturn = false;
+                    }
+
+                }
+                else {
+
+
+                    var rand = Math.floor((Math.random() * 4) + 1)
+
+                    var xDiff = this.pacman.body.x - chaser.body.x;
+                    var yDiff = this.pacman.body.y - chaser.body.y;
+
+                    if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                            if (xDiff > 0) {
+                                if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
+                                    this.chaserSetAndMove(i, 3);
+                                    counter = 10;
+                                    var done = true;
+                                    break;
+                                }
+                            }
+                            else {
+                                if (chaserdirections[1].index === this.safetile || chaserdirections[1].index === 8) {
+                                    this.chaserSetAndMove(i, 1);
+                                    counter = 10;
+                                    var done = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            if (yDiff > 0) {
+                                if (chaserdirections[2].index === this.safetile || chaserdirections[2].index === 8) {
+                                    this.chaserSetAndMove(i, 2);
+                                    counter = 10;
+                                    var done = true;
+                                    break;
+                                }
+                            }
+                            else {
+                                if (chaserdirections[0].index === this.safetile || chaserdirections[0].index === 8) {
+                                    this.chaserSetAndMove(i, 0);
+                                    counter = 10;
+                                    var done = true;
+                                    break;
+                                }
                             }
                         }
                     }
                     else {
-                        if (yDiff > 0) {
-                            if (this.guarddirections[2].index === this.safetile || this.guarddirections[2].index === 8) {
-                                this.ghostSetAndMove(i, 2);
-                                counter = 10;
-                                var done = true;
-                                break;
-                            }
-                        }
-                        else {
-                            if (this.guarddirections[0].index === this.safetile || this.guarddirections[0].index === 8) {
-                                this.ghostSetAndMove(i, 0);
-                                counter = 10;
-                                var done = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else {
-                    for (var k = 0; k < 4;) {
-                        if (rand % 4 !== this.guardComingFrom) {
-                            if (this.guarddirections[rand % 4].index === this.safetile || this.guarddirections[rand % 4].index === 8) {
-                                tempDir = rand % 4;
-                                this.ghostSetAndMove(i, tempDir);
-                                counter = 10;
-                                var done = true;
-                                break;
-                            }
+                        for (var k = 0; k < 4;) {
+                            if (rand % 4 !== chaserComingFrom) {
+                                if (chaserdirections[rand % 4].index === this.safetile || chaserdirections[rand % 4].index === 8) {
+                                    tempDir = rand % 4;
+                                    this.chaserSetAndMove(i, tempDir);
+                                    counter = 10;
+                                    var done = true;
+                                    break;
+                                }
 
+                            }
+                            rand++;
+                            k++;
                         }
-                        rand++;
-                        k++;
                     }
                 }
                 
@@ -441,28 +507,6 @@ Pacman.prototype = {
         }
     },
 
-    ghostUpdateDirection: function () {
-
-        if (this.guard.body.velocity.y === 0 && this.guard.body.velocity.x < 0)
-            this.guardComingFrom = Utilities.Left;
-        else if (this.guard.body.velocity.y === 0 && this.guard.body.velocity.x > 0)
-            this.guardComingFrom = Utilities.Right;
-        else if (this.guard.body.velocity.x === 0 && this.guard.body.velocity.y > 0)
-            this.guardComingFrom = Utilities.Up;
-        else if (this.guard.body.velocity.x === 0 && this.guard.body.velocity.y < 0)
-            this.guardComingFrom = Utilities.Down;
-        else {
-
-        }
-
-    },
-
-    ghostSetAndMove: function (decisionIndex, pushDirection) {
-        this.guard.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
-        this.guard.body.y = Utilities.tileToPixels(decisionPoints[decisionIndex].y);
-        this.ghostmove(pushDirection);
-
-    },
 
     chasermove: function (direction) {
         if (direction === Utilities.Up) {
@@ -488,87 +532,7 @@ Pacman.prototype = {
         }
     },
 
-    chaserUpdateDirection: function () {
 
-        if (chaser.body.velocity.x > 0)
-            chaserComingFrom = Utilities.Right;
-        else if (chaser.body.velocity.x < 0)
-            chaserComingFrom = Utilities.Left;
-        else if (chaser.body.velocity.y > 0)
-            chaserComingFrom = Utilities.Up;
-        else if (chaser.body.velocity.y < 0)
-            chaserComingFrom = Utilities.Down;
-    },
-
-    chaserAI: function () {
-        chasermarker.x = this.math.snapToFloor(Math.floor(chaser.body.x), this.gridsize) / this.gridsize;
-        chasermarker.y = this.math.snapToFloor(Math.floor(chaser.body.y), this.gridsize) / this.gridsize;
-
-        chaserdirections[Utilities.Up] = map.getTileAbove(map.getLayer(), chasermarker.x, chasermarker.y);
-        chaserdirections[Utilities.Left] = map.getTileLeft(map.getLayer(), chasermarker.x, chasermarker.y);
-        chaserdirections[Utilities.Down] = map.getTileBelow(map.getLayer(), chasermarker.x, chasermarker.y);
-        chaserdirections[Utilities.Right] = map.getTileRight(map.getLayer(), chasermarker.x, chasermarker.y);
-
-        if (chaser.body.velocity.x === 0 && chaser.body.velocity.y === 0) {
-
-            for (var i = Utilities.Up; i < 4;) {
-                if (i !== chaserComingFrom) {
-                    if (chaserdirections[i].index === this.safetile || chaserdirections[i].index === 8) {
-                        this.chasermove(i);
-                        break;
-                    }
-
-                }
-                i++;
-            }
-        }
-
-        for (var i = 0; i < decisionPoints.length;) {
-
-            if (this.math.fuzzyEqual(chaser.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(chaser.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
-                var xDiff = this.pacman.body.x - chaser.body.x;
-                var yDiff = this.pacman.body.y - chaser.body.y;
-
-                if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                    if (xDiff > 0) {
-                        if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
-                            this.chaserSetAndMove(i, 3);
-                            counter2 = 10;
-                            break;
-                        }
-                    }
-                    else {
-                        if (chaserdirections[1].index === this.safetile || chaserdirections[1].index === 8) {
-                            this.chaserSetAndMove(i, 1);
-                            counter2 = 10;
-                            break;
-                        }
-                    }
-                }
-                else {
-                    if (yDiff > 0) {
-                        if (chaserdirections[2].index === this.safetile || chaserdirections[2].index === 8) {
-                            this.chaserSetAndMove(i, 2);
-                            counter2 = 10;
-                            break;
-                        }
-                    }
-                    else {
-                        if (chaserdirections[0].index === this.safetile || chaserdirections[0].index === 8) {
-                            this.chaserSetAndMove(i, 0);
-                            counter2 = 10;
-                            break;
-                        }
-                    }
-
-                }
-
-
-            }
-            i++;
-
-        }
-    },
 
     chaserSetAndMove: function (decisionIndex, pushDirection) {
         chaser.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
@@ -577,7 +541,144 @@ Pacman.prototype = {
 
     },
 
+    //GUARD 2
 
+    racerAI: function () {
+
+        racermarker.x = this.math.snapToFloor(Math.floor(racer.x), this.gridsize) / this.gridsize;
+        racermarker.y = this.math.snapToFloor(Math.floor(racer.y), this.gridsize) / this.gridsize;
+
+        racerdirections[Utilities.Up] = map.getTileAbove(map.getLayer(), racermarker.x, racermarker.y);
+        racerdirections[Utilities.Left] = map.getTileLeft(map.getLayer(), racermarker.x, racermarker.y);
+        racerdirections[Utilities.Down] = map.getTileBelow(map.getLayer(), racermarker.x, racermarker.y);
+        racerdirections[Utilities.Right] = map.getTileRight(map.getLayer(), racermarker.x, racermarker.y);
+
+
+        //STUCK IN A CORNER
+        if (racer.body.velocity.x === 0 && racer.body.velocity.y === 0) {
+
+            for (var i = Utilities.Up; i < 4;) {
+                if (i !== racerComingFrom) {
+                    if (racerdirections[i].index === this.safetile || racerdirections[i].index === 8) {
+                        this.racermove(i);
+                        break;
+                    }
+
+                }
+                i++;
+            }
+        }
+
+        //DECISION TIME
+
+        for (var i = 0; i < decisionPoints.length;) {
+
+            if (this.math.fuzzyEqual(racer.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(racer.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
+                var rand = Math.floor((Math.random() * 4) + 1)
+
+                var xDiff = this.pacman.body.x - racer.body.x;
+                var yDiff = this.pacman.body.y - racer.body.y;
+        
+                if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                        if (xDiff > 0) {
+                            if (racerdirections[3].index === this.safetile || racerdirections[3].index === 8) {
+                                this.racerSetAndMove(i, 3);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (racerdirections[1].index === this.safetile || racerdirections[1].index === 8) {
+                                this.racerSetAndMove(i, 1);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        if (yDiff > 0) {
+                            if (racerdirections[2].index === this.safetile || racerdirections[2].index === 8) {
+                                this.racerSetAndMove(i, 2);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (racerdirections[0].index === this.safetile || racerdirections[0].index === 8) {
+                                this.racerSetAndMove(i, 0);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (var k = 0; k < 4;) {
+                        if (rand % 4 !== racerComingFrom) {
+                            if (racerdirections[rand % 4].index === this.safetile || racerdirections[rand % 4].index === 8) {
+                                tempDir = rand % 4;
+                                this.racerSetAndMove(i, tempDir);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+
+                        }
+                        rand++;
+                        k++;
+                    }
+                }
+
+
+
+            }
+            i++;
+
+            if (done) {
+                done = false;
+                break;
+            }
+        }
+    },
+
+
+    racermove: function (direction) {
+        if (direction === Utilities.Up) {
+            racer.body.velocity.y = -(Utilities.Speed);
+            racer.body.velocity.x = 0;
+            racerComingFrom = Utilities.Down;
+
+        }
+        else if (direction === Utilities.Down) {
+            racer.body.velocity.y = (Utilities.Speed);
+            racer.body.velocity.x = 0;
+            racerComingFrom = Utilities.Up;
+        }
+        else if (direction === Utilities.Left) {
+            racer.body.velocity.x = -(Utilities.Speed);
+            racer.body.velocity.y = 0;
+            racerComingFrom = Utilities.Right;
+        }
+        else if (direction === Utilities.Right) {
+            racer.body.velocity.x = (Utilities.Speed);
+            racer.body.velocity.y = 0;
+            racerComingFrom = Utilities.Left;
+        }
+    },
+
+
+
+    racerSetAndMove: function (decisionIndex, pushDirection) {
+        racer.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
+        racer.body.y = Utilities.tileToPixels(decisionPoints[decisionIndex].y);
+        this.racermove(pushDirection);
+
+    },
 
     checkExitCollision: function () {
         if (this.pacman.x == nwExit.x + 12 && this.pacman.y == nwExit.y + 36) {
@@ -606,9 +707,315 @@ Pacman.prototype = {
     },
 
 
+    //GUARD 3
+
+    tracerAI: function () {
+
+        tracermarker.x = this.math.snapToFloor(Math.floor(tracer.x), this.gridsize) / this.gridsize;
+        tracermarker.y = this.math.snapToFloor(Math.floor(tracer.y), this.gridsize) / this.gridsize;
+
+        tracerdirections[Utilities.Up] = map.getTileAbove(map.getLayer(), tracermarker.x, tracermarker.y);
+        tracerdirections[Utilities.Left] = map.getTileLeft(map.getLayer(), tracermarker.x, tracermarker.y);
+        tracerdirections[Utilities.Down] = map.getTileBelow(map.getLayer(), tracermarker.x, tracermarker.y);
+        tracerdirections[Utilities.Right] = map.getTileRight(map.getLayer(), tracermarker.x, tracermarker.y);
+
+
+        //STUCK IN A CORNER
+        if (tracer.body.velocity.x === 0 && tracer.body.velocity.y === 0) {
+
+            for (var i = Utilities.Up; i < 4;) {
+                if (i !== tracerComingFrom) {
+                    if (tracerdirections[i].index === this.safetile || tracerdirections[i].index === 8) {
+                        this.tracermove(i);
+                        break;
+                    }
+
+                }
+                i++;
+            }
+        }
+
+        for (var i = 0; i < decisionPoints.length;) {
+
+            if (this.math.fuzzyEqual(tracer.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(tracer.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
+                var rand = Math.floor((Math.random() * 4) + 1)
+
+                var xDiff = this.pacman.body.x - tracer.body.x;
+                var yDiff = this.pacman.body.y - tracer.body.y;
+
+                if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                        if (xDiff > 0) {
+                            if (tracerdirections[3].index === this.safetile || tracerdirections[3].index === 8) {
+                                this.tracerSetAndMove(i, 3);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (tracerdirections[1].index === this.safetile || tracerdirections[1].index === 8) {
+                                this.tracerSetAndMove(i, 1);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        if (yDiff > 0) {
+                            if (tracerdirections[2].index === this.safetile || tracerdirections[2].index === 8) {
+                                this.tracerSetAndMove(i, 2);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (tracerdirections[0].index === this.safetile || tracerdirections[0].index === 8) {
+                                this.tracerSetAndMove(i, 0);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (var k = 0; k < 4;) {
+                        if (rand % 4 !== tracerComingFrom) {
+                            if (tracerdirections[rand % 4].index === this.safetile || tracerdirections[rand % 4].index === 8) {
+                                tempDir = rand % 4;
+                                this.tracerSetAndMove(i, tempDir);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+
+                        }
+                        rand++;
+                        k++;
+                    }
+                }
+
+
+
+            }
+            i++;
+
+            if (done) {
+                done = false;
+                break;
+            }
+        }
+    },
+
+
+    tracermove: function (direction) {
+        if (direction === Utilities.Up) {
+            tracer.body.velocity.y = -(Utilities.Speed);
+            tracer.body.velocity.x = 0;
+            tracerComingFrom = Utilities.Down;
+
+        }
+        else if (direction === Utilities.Down) {
+            tracer.body.velocity.y = (Utilities.Speed);
+            tracer.body.velocity.x = 0;
+            tracerComingFrom = Utilities.Up;
+        }
+        else if (direction === Utilities.Left) {
+            tracer.body.velocity.x = -(Utilities.Speed);
+            tracer.body.velocity.y = 0;
+            tracerComingFrom = Utilities.Right;
+        }
+        else if (direction === Utilities.Right) {
+            tracer.body.velocity.x = (Utilities.Speed);
+            tracer.body.velocity.y = 0;
+            tracerComingFrom = Utilities.Left;
+        }
+    },
+
+
+
+    tracerSetAndMove: function (decisionIndex, pushDirection) {
+        tracer.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
+        tracer.body.y = Utilities.tileToPixels(decisionPoints[decisionIndex].y);
+        this.tracermove(pushDirection);
+
+    },
+
+    //GUARD 4
+
+    caribouAI: function () {
+
+        cariboumarker.x = this.math.snapToFloor(Math.floor(caribou.x), this.gridsize) / this.gridsize;
+        cariboumarker.y = this.math.snapToFloor(Math.floor(caribou.y), this.gridsize) / this.gridsize;
+
+        cariboudirections[Utilities.Up] = map.getTileAbove(map.getLayer(), cariboumarker.x, cariboumarker.y);
+        cariboudirections[Utilities.Left] = map.getTileLeft(map.getLayer(), cariboumarker.x, cariboumarker.y);
+        cariboudirections[Utilities.Down] = map.getTileBelow(map.getLayer(), cariboumarker.x, cariboumarker.y);
+        cariboudirections[Utilities.Right] = map.getTileRight(map.getLayer(), cariboumarker.x, cariboumarker.y);
+
+
+        //STUCK IN A CORNER
+        if (caribou.body.velocity.x === 0 && caribou.body.velocity.y === 0) {
+
+            for (var i = Utilities.Up; i < 4;) {
+                if (i !== caribouComingFrom) {
+                    if (cariboudirections[i].index === this.safetile || cariboudirections[i].index === 8) {
+                        this.cariboumove(i);
+                        break;
+                    }
+
+                }
+                i++;
+            }
+        }
+
+
+
+        for (var i = 0; i < decisionPoints.length;) {
+
+            if (this.math.fuzzyEqual(caribou.body.x, Utilities.tileToPixels(decisionPoints[i].x), this.AIthreshold) && this.math.fuzzyEqual(caribou.body.y, Utilities.tileToPixels(decisionPoints[i].y), this.AIthreshold)) {
+                var rand = Math.floor((Math.random() * 4) + 1)
+
+                var xDiff = this.pacman.body.x - caribou.body.x;
+                var yDiff = this.pacman.body.y - caribou.body.y;
+
+                if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                        if (xDiff > 0) {
+                            if (cariboudirections[3].index === this.safetile || cariboudirections[3].index === 8) {
+                                this.caribouSetAndMove(i, 3);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (cariboudirections[1].index === this.safetile || cariboudirections[1].index === 8) {
+                                this.caribouSetAndMove(i, 1);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        if (yDiff > 0) {
+                            if (cariboudirections[2].index === this.safetile || cariboudirections[2].index === 8) {
+                                this.caribouSetAndMove(i, 2);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (cariboudirections[0].index === this.safetile || cariboudirections[0].index === 8) {
+                                this.caribouSetAndMove(i, 0);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (var k = 0; k < 4;) {
+                        if (rand % 4 !== caribouComingFrom) {
+                            if (cariboudirections[rand % 4].index === this.safetile || cariboudirections[rand % 4].index === 8) {
+                                tempDir = rand % 4;
+                                this.caribouSetAndMove(i, tempDir);
+                                counter2 = 10;
+                                var done = true;
+                                break;
+                            }
+
+                        }
+                        rand++;
+                        k++;
+                    }
+                }
+
+
+
+            }
+            i++;
+
+            if (done) {
+                done = false;
+                break;
+            }
+        }
+    },
+
+
+    cariboumove: function (direction) {
+        if (direction === Utilities.Up) {
+            caribou.body.velocity.y = -(Utilities.Speed);
+            caribou.body.velocity.x = 0;
+            caribouComingFrom = Utilities.Down;
+
+        }
+        else if (direction === Utilities.Down) {
+            caribou.body.velocity.y = (Utilities.Speed);
+            caribou.body.velocity.x = 0;
+            caribouComingFrom = Utilities.Up;
+        }
+        else if (direction === Utilities.Left) {
+            caribou.body.velocity.x = -(Utilities.Speed);
+            caribou.body.velocity.y = 0;
+            caribouComingFrom = Utilities.Right;
+        }
+        else if (direction === Utilities.Right) {
+            caribou.body.velocity.x = (Utilities.Speed);
+            caribou.body.velocity.y = 0;
+            caribouComingFrom = Utilities.Left;
+        }
+    },
+
+
+
+    caribouSetAndMove: function (decisionIndex, pushDirection) {
+        caribou.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
+        caribou.body.y = Utilities.tileToPixels(decisionPoints[decisionIndex].y);
+        this.cariboumove(pushDirection);
+
+    },
+
+    checkExitCollision: function () {
+        if (this.pacman.x == nwExit.x + 12 && this.pacman.y == nwExit.y + 36) {
+            if (nwExitState == ExitState.OPEN) {
+                console.log("Took nw exit!");
+            }
+        }
+
+        else if (this.pacman.x == neExit.x + 12 && this.pacman.y == neExit.y + 36) {
+            if (neExitState == ExitState.OPEN) {
+                console.log("Took ne exit!");
+            }
+        }
+
+        else if (this.pacman.x == swExit.x + 12 && this.pacman.y == swExit.y + 36) {
+            if (swExitState == ExitState.OPEN) {
+                console.log("Took sw exit!");
+            }
+        }
+
+        else if (this.pacman.x == seExit.x + 12 && this.pacman.y == seExit.y + 36) {
+            if (seExitState == ExitState.OPEN) {
+                console.log("Took se exit!");
+            }
+        }
+    },
+
     powerPellet: function(){
-
-
+        powerCounter = 1000
+        poweredUp = true;
+        chaserReturn = true;
+        racerReturn = true;
+        tracerReturn = true;
+        caribouReturn = true;
 
     },
 
@@ -618,6 +1025,9 @@ Pacman.prototype = {
         this.physics.arcade.collide(this.pacman, mapLayer);
         this.game.physics.arcade.collide(this.guard, mapLayer);
         this.game.physics.arcade.collide(chaser, mapLayer);
+        this.game.physics.arcade.collide(racer, mapLayer);
+        this.game.physics.arcade.collide(tracer, mapLayer);
+        this.game.physics.arcade.collide(caribou, mapLayer);
         this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
 
         if (this.physics.arcade.overlap(this.pacman, this.stairs)) {
@@ -625,6 +1035,13 @@ Pacman.prototype = {
         }
         else {
             this.justTeleported = false;
+        }
+
+        if (this.physics.arcade.overlap(this.pacman, this.spray)) {
+            this.powerPellet();
+        }
+        else {
+            powerCounter--;
         }
 
 
@@ -655,7 +1072,21 @@ Pacman.prototype = {
         }
 
         if (counter2 === 0) {
-            this.chaserAI();
+            this.racerAI();
+        }
+        else {
+            counter2--;
+        }
+
+        if (counter2 === 0) {
+            this.tracerAI();
+        }
+        else {
+            counter2--;
+        }
+
+        if (counter2 === 0) {
+            this.caribouAI();
         }
         else {
             counter2--;
@@ -663,8 +1094,10 @@ Pacman.prototype = {
 
 
 
-        this.physics.arcade.overlap(this.pacman, this.guard, this.die, null, this);
+        this.physics.arcade.overlap(this.pacman, racer, this.die, null, this);
         this.physics.arcade.overlap(this.pacman, chaser, this.die, null, this);
+        this.physics.arcade.overlap(this.pacman, tracer, this.die, null, this);
+        this.physics.arcade.overlap(this.pacman, caribou, this.die, null, this);
     }
 }
 
