@@ -98,7 +98,7 @@ Pacman.prototype = {
 		this.stairs = this.add.physicsGroup();
 		map.createFromTiles(6, 6, 'dot', mapLayer, this.stairs);
 
-        map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
+        map.setCollisionByExclusion([this.safetile, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
@@ -139,11 +139,6 @@ Pacman.prototype = {
     },
 
     checkKeys: function () {
-        /*
-        if (dieButton.isDown) {
-            this.die();
-        }
-        */
 
         if (this.cursors.left.isDown && this.current !== Phaser.LEFT) {
             this.checkDirection(Phaser.LEFT);
@@ -168,7 +163,7 @@ Pacman.prototype = {
         // NOTE: The Index != safetile part is making it so that pacman can't turn when on white tiles.
         // Change this line to give more options for safe tiles, or might have to redo parts of tilemap.
         if (this.turning === turnTo || this.directions[turnTo] === null || this.directions[turnTo].index !== this.safetile) {
-            if (this.directions[turnTo].index !== 8) {
+            if (!(this.directions[turnTo].index == 8 || this.directions[turnTo].index == 4 || this.directions[turnTo].index == 5)) {
                  //  Invalid direction if they're already set to turn that way
                  //  Or there is no tile there, or the tile isn't index 1 (a floor tile)
                 return;
@@ -304,6 +299,33 @@ Pacman.prototype = {
 
     },
 
+
+    checkExitCollision: function () {
+        if (this.pacman.x == nwExit.x + 12 && this.pacman.y == nwExit.y + 36) {
+            if (nwExitState == ExitState.OPEN) {
+                console.log("Took nw exit!");
+            }
+        }
+
+        else if (this.pacman.x == neExit.x + 12 && this.pacman.y == neExit.y + 36) {
+            if (neExitState == ExitState.OPEN) {
+                console.log("Took ne exit!");
+            }
+        }
+
+        else if (this.pacman.x == swExit.x + 12 && this.pacman.y == swExit.y + 36) {
+            if (swExitState == ExitState.OPEN) {
+                console.log("Took sw exit!");
+            }
+        }
+
+        else if (this.pacman.x == seExit.x + 12 && this.pacman.y == seExit.y + 36) {
+            if (seExitState == ExitState.OPEN) {
+                console.log("Took se exit!");
+            }
+        }
+    },
+
     update: function () {
 
         enemies.forEach(function (ghost) {
@@ -321,7 +343,10 @@ Pacman.prototype = {
 			this.justTeleported = false;
 		}
 
+
         UpdateExit();
+        this.checkExitCollision();
+
 
         this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
         this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
