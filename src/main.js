@@ -110,7 +110,7 @@ Pacman.prototype = {
         this.pacman.body.setSize(24, 24, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
         dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        // dieButton.onDown.add(die, this); 
+        dieButton.onDown.add(this.die, this); 
 
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
@@ -139,9 +139,11 @@ Pacman.prototype = {
     },
 
     checkKeys: function () {
+        /*
         if (dieButton.isDown) {
             this.die();
         }
+        */
 
         if (this.cursors.left.isDown && this.current !== Phaser.LEFT) {
             this.checkDirection(Phaser.LEFT);
@@ -264,14 +266,15 @@ Pacman.prototype = {
     },
 
     die: function () {
+        this.lives--;
         
-        if (this.lives <= 0) {
+        if (this.lives < 1) {
             game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
             // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
             this.pacman.kill();
         }
         else {
-            this.lives--;
+            
             this.dots.callAll('revive');
             this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
             this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
