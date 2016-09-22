@@ -73,6 +73,7 @@ Pacman.prototype = {
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
         game.load.image('pinky', 'assets/pinky.png');
+        game.load.spritesheet('exitLights', 'assets/exitLights.png', 24, 24);
 
     },
 
@@ -125,6 +126,8 @@ Pacman.prototype = {
 		pinky = new Guard(game, 14, 7, 'pinky', 3, 1);
 		pinky.anchor.set(0.5);
 		enemies.add(pinky);
+
+        StartExit();
 
 		enemies.forEach(function (ghost) {
 		    ghost.move(Utilities.Right);
@@ -305,6 +308,7 @@ Pacman.prototype = {
 			this.justTeleported = false;
 		}
 
+        UpdateExit();
 
         this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
         this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
