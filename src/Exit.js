@@ -21,15 +21,15 @@ var openProbability = 40;
 
 
 function StartExit() {
-	
-	nwExit = game.add.sprite((1 * 24), (3 * 24), 'exitLights', 0);
-	neExit = game.add.sprite((30 * 24), (3 * 24), 'exitLights', 0);
-	swExit = game.add.sprite((1 * 24), (27 * 24), 'exitLights', 0);
-	seExit = game.add.sprite((30 * 24), (27 * 24), 'exitLights', 0);
+
+	nwExit = game.add.sprite((1 * Utilities.TILE_SIZE), (3 * Utilities.TILE_SIZE), 'exitLights', 0);
+	neExit = game.add.sprite((30 * Utilities.TILE_SIZE), (3 * Utilities.TILE_SIZE), 'exitLights', 0);
+	swExit = game.add.sprite((1 * Utilities.TILE_SIZE), (27 * Utilities.TILE_SIZE), 'exitLights', 0);
+	seExit = game.add.sprite((30 * Utilities.TILE_SIZE), (27 * Utilities.TILE_SIZE), 'exitLights', 0);
 
 	console.log("Added sprites?");
 
-	// console.log(Pacman.tilesize);
+	console.log(Utilities.TILE_SIZE);
 	nwExit.animations.add('close', [0], 20, true);
 	nwExit.animations.add('open', [1], 20, true);
 

@@ -74,7 +74,8 @@ Pacman.prototype = {
         this.load.image('ghost', 'assets/ghost.png');
         game.load.image('pinky', 'assets/pinky.png');
         game.load.spritesheet('exitLights', 'assets/exitLights.png', 24, 24);
-
+        game.load.spritesheet('playerm', 'assets/playerm.png', 40, 40);
+        game.load.spritesheet('playerf', 'assets/playerf.png', 40, 40);
     },
 
 
@@ -98,9 +99,12 @@ Pacman.prototype = {
 		map.createFromTiles(6, 6, 'dot', mapLayer, this.stairs);
 
         map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
-        this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'pacman', 0);
+        this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
+        this.pacman.animations.add('walkDown', [0, 1, 2, 3], 12, true);
+        this.pacman.animations.add('walkRight', [8, 9, 10, 11], 12, true);
+        this.pacman.animations.add('walkUp', [4, 5, 6, 7], 12, true);
 
         this.physics.arcade.enable(this.pacman);
         this.pacman.body.setSize(24, 24, 0, 0);
@@ -108,7 +112,7 @@ Pacman.prototype = {
         dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         // dieButton.onDown.add(die, this); 
 
-        this.pacman.play('munch');
+        this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
 
         this.guard = this.add.sprite((this.gridsize * 3) + 12, (this.gridsize * 1) + 12, 'ghost',0);
@@ -212,12 +216,18 @@ Pacman.prototype = {
         this.pacman.angle = 0;
         if (direction === Phaser.LEFT) {
             this.pacman.scale.x = -1;
+            this.pacman.play('walkRight');
         }
         else if (direction === Phaser.UP) {
-            this.pacman.angle = 270;
+            // this.pacman.angle = 270;
+            this.pacman.play('walkUp');
         }
         else if (direction === Phaser.DOWN) {
-            this.pacman.angle = 90;
+            // this.pacman.angle = 90;
+            this.pacman.play('walkDown');
+        }
+        else if (direction === Phaser.RIGHT) {
+            this.pacman.play('walkRight');
         }
         this.current = direction;
     },
