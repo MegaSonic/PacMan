@@ -8,11 +8,14 @@ var text;
 var textGroup;
 var livesText;
 var dieButton;
+var changeButton;
 
 var enemies;
 
 var pinky;
 
+var PlayerState = { MALE: false, FEMALE: true };
+var playerGender = PlayerState.MALE;
 
 var Pacman = function (game) {
 
@@ -99,6 +102,7 @@ Pacman.prototype = {
 		map.createFromTiles(6, 6, 'dot', mapLayer, this.stairs);
 
         map.setCollisionByExclusion([this.safetile, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
+
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
@@ -109,8 +113,12 @@ Pacman.prototype = {
         this.physics.arcade.enable(this.pacman);
         this.pacman.body.setSize(24, 24, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
+
+
         dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         dieButton.onDown.add(this.die, this); 
+        changeButton = this.input.keyboard.addKey(Phaser.Keyboard.Z);
+        changeButton.onDown.add(this.changePlayer, this);
 
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
@@ -276,6 +284,17 @@ Pacman.prototype = {
             this.move(Phaser.RIGHT);
         }
         livesText.text = this.lives;
+    },
+
+    changePlayer: function() {
+        if (playerGender == PlayerState.MALE) {
+            this.pacman.loadTexture('playerf', 0);
+            playerGender = PlayerState.FEMALE;
+        }
+        else {
+            this.pacman.loadTexture('playerm', 0);
+            playerGender = PlayerState.MALE;
+        }
     },
 
 	teleport: function () {
