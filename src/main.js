@@ -10,6 +10,8 @@ var livesText;
 var dieButton;
 var tempDir;
 var counter = 0;
+var counter2 = 0;
+
 
 var enemies;
 
@@ -18,6 +20,7 @@ var pinky;
 var chaser;
 var chaserdirections = [null, null, null, null, null];
 var chaserComingFrom = Utilities.Left;
+var chasermarker = new Phaser.Point();
 
 var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1),
     new Phaser.Point(2, 4), new Phaser.Point(29, 4),
@@ -26,9 +29,9 @@ var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phase
     new Phaser.Point(14, 13), new Phaser.Point(17, 13),
     new Phaser.Point(11, 19), new Phaser.Point(20, 19),
     new Phaser.Point(8, 22), new Phaser.Point(11, 22), new Phaser.Point(20, 22), new Phaser.Point(23, 22),
-    new Phaser.Point(2, 24), new Phaser.Point(8, 24), new Phaser.Point(11, 24), new Phaser.Point(14, 24), new Phaser.Point(17, 24), new Phaser.Point(20, 24), new Phaser.Point(23, 24), new Phaser.Point(29, 24),
-    new Phaser.Point(2, 27), new Phaser.Point(7, 27), new Phaser.Point(11, 27), new Phaser.Point(14, 27), new Phaser.Point(17, 27), new Phaser.Point(20, 27), new Phaser.Point(25, 27), new Phaser.Point(29, 27),
-	new Phaser.Point(7, 31), new Phaser.Point(11, 31), new Phaser.Point(14, 31), new Phaser.Point(17, 31), new Phaser.Point(20, 31), new Phaser.Point(25, 31) ];
+    new Phaser.Point(2, 25), new Phaser.Point(8, 25), new Phaser.Point(11, 25), new Phaser.Point(14, 25), new Phaser.Point(17, 25), new Phaser.Point(20, 25), new Phaser.Point(23, 25), new Phaser.Point(29, 25),
+    new Phaser.Point(2, 28), new Phaser.Point(7, 28), new Phaser.Point(11, 28), new Phaser.Point(14, 28), new Phaser.Point(17, 28), new Phaser.Point(20, 28), new Phaser.Point(25, 28), new Phaser.Point(29, 28),
+	new Phaser.Point(7, 32), new Phaser.Point(11, 32), new Phaser.Point(14, 32), new Phaser.Point(17, 32), new Phaser.Point(20, 32), new Phaser.Point(25, 32) ];
 
 
 var Pacman = function (game) {
@@ -411,23 +414,27 @@ Pacman.prototype = {
 
 	},
 
-	chasemove: function (direction) {
+	chasermove: function (direction) {
 	    if (direction === Utilities.Up) {
 	        chaser.body.velocity.y = -(Utilities.Speed);
-	        //this.guardComingFrom = Utilities.Down;
+	        chaser.body.velocity.x = 0;
+	        chaserComingFrom = Utilities.Down;
 
 	    }
 	    else if (direction === Utilities.Down) {
 	        chaser.body.velocity.y = (Utilities.Speed);
-	        //this.guardComingFrom = Utilities.Up;
+	        chaser.body.velocity.x = 0;
+	        chaserComingFrom = Utilities.Up;
 	    }
 	    else if (direction === Utilities.Left) {
 	        chaser.body.velocity.x = -(Utilities.Speed);
-	        //this.guardComingFrom = Utilities.Right;
+	        chaser.body.velocity.y = 0;
+	        chaserComingFrom = Utilities.Right;
 	    }
 	    else if (direction === Utilities.Right) {
 	        chaser.body.velocity.x = (Utilities.Speed);
-	        //this.guardComingFrom = Utilities.Left;
+	        chaser.body.velocity.y = 0;
+	        chaserComingFrom = Utilities.Left;
 	    }
 	},
 
@@ -444,19 +451,19 @@ Pacman.prototype = {
 	},
 
 	chaserAI: function(){
-	    this.chasermarker.x = this.math.snapToFloor(Math.floor(chaser.x), this.gridsize) / this.gridsize;
-	    this.chasermarker.y = this.math.snapToFloor(Math.floor(chaser.y), this.gridsize) / this.gridsize;
+	    chasermarker.x = this.math.snapToFloor(Math.floor(chaser.body.x), this.gridsize) / this.gridsize;
+	    chasermarker.y = this.math.snapToFloor(Math.floor(chaser.body.y), this.gridsize) / this.gridsize;
 
-	    this.chaserdirections[Utilities.Up] = map.getTileAbove(map.getLayer(), this.chasermarker.x, this.chasermarker.y);
-	    this.chaserdirections[Utilities.Left] = map.getTileLeft(map.getLayer(), this.chasermarker.x, this.chasermarker.y);
-	    this.chaserdirections[Utilities.Down] = map.getTileBelow(map.getLayer(), this.chasermarker.x, this.chasermarker.y);
-	    this.chaserdirections[Utilities.Right] = map.getTileRight(map.getLayer(), this.chasermarker.x, this.chasermarker.y);
+	    chaserdirections[Utilities.Up] = map.getTileAbove(map.getLayer(), chasermarker.x, chasermarker.y);
+	    chaserdirections[Utilities.Left] = map.getTileLeft(map.getLayer(), chasermarker.x, chasermarker.y);
+	    chaserdirections[Utilities.Down] = map.getTileBelow(map.getLayer(), chasermarker.x, chasermarker.y);
+	    chaserdirections[Utilities.Right] = map.getTileRight(map.getLayer(), chasermarker.x, chasermarker.y);
 
-	    if (this.chaser.body.velocity.x === 0 && this.chaser.body.velocity.y === 0) {
+	    if (chaser.body.velocity.x === 0 && chaser.body.velocity.y === 0) {
 
 	        for (var i = Utilities.Up; i < 4;) {
-	            if (i !== this.chaserComingFrom) {
-	                if (this.chaserdirections[i].index === this.safetile || this.chaserdirections[i].index === 8) {
+	            if (i !== chaserComingFrom) {
+	                if (chaserdirections[i].index === this.safetile ||chaserdirections[i].index === 8) {
 	                    this.chasermove(i);
 	                    break;
 	                }
@@ -472,17 +479,54 @@ Pacman.prototype = {
 	            var xDiff = this.pacman.body.x - chaser.body.x;
 	            var yDiff = this.pacman.body.y - chaser.body.y;
 
+	            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+	                if (xDiff > 0) {
+	                    if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
+	                        this.chaserSetAndMove(i, 3);
+	                        counter2 = 10;
+	                        break;
+	                    }
+	                }
+	                else {
+	                    if (chaserdirections[1].index === this.safetile || chaserdirections[1].index === 8) {
+	                        this.chaserSetAndMove(i, 1);
+	                        counter2 = 10;
+	                        break;
+	                    }
+	                }
+	            }
+	            else{
+                    if (yDiff > 0) {
+	                    if (chaserdirections[2].index === this.safetile || chaserdirections[2].index === 8) {
+	                        this.chaserSetAndMove(i, 2);
+	                        counter2 = 10;
+	                        break;
+	                    }
+	                }
+	                else {
+	                    if (chaserdirections[0].index === this.safetile || chaserdirections[0].index === 8) {
+	                        this.chaserSetAndMove(i, 0);
+	                        counter2 = 10;
+	                        break;
+	                    }
+	                }
+	                
+	            }
 
 
 	        }
 	        i++;
 
-	        if (done) {
-	            done = false;
-	            break;
-	        }
 	    }
 	},
+
+	chaserSetAndMove: function (decisionIndex, pushDirection) {
+	    chaser.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
+	    chaser.body.y = Utilities.tileToPixels(decisionPoints[decisionIndex].y);
+	    this.chasermove(pushDirection);
+
+	},
+
 
     update: function () {
 
@@ -526,11 +570,24 @@ Pacman.prototype = {
             counter--;
         }
 
+        if (counter2 === 0) {
+            this.chaserAI();
+        }
+        else {
+            counter2--;
+        }
+
 
 
         this.physics.arcade.overlap(this.pacman, this.guard, this.die, null, this);
+        this.physics.arcade.overlap(this.pacman, chaser, this.die, null, this);
     }
 }
+
+
+
+
+// MOSTLY USELESS
 
 function ghostCollide(ghost, tile) {
     ghost.updateDirections(map);
