@@ -160,8 +160,8 @@ Pacman.prototype = {
         this.cursors = this.input.keyboard.createCursorKeys();
 
 
-        dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        dieButton.onDown.add(this.die, this);
+        // dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        // dieButton.onDown.add(this.die, this);
         changeButton = this.input.keyboard.addKey(Phaser.Keyboard.Z);
         changeButton.onDown.add(this.changePlayer, this);
 
@@ -313,9 +313,10 @@ Pacman.prototype = {
         this.lives--;
 
         if (this.lives < 1) {
-            game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
+            game.state.start('GameOver');
+            //game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
             // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
-            this.pacman.kill();
+            //this.pacman.kill();
         }
         else {
 
@@ -1102,3 +1103,6 @@ Pacman.prototype = {
 }
 
 game.state.add('Game', Pacman, true);
+game.state.add('Title', titleState);
+game.state.add('GameOver', gameOverState);
+game.state.start('Title');
