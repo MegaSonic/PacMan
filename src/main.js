@@ -117,9 +117,7 @@ Pacman.prototype = {
 
     preload: function () {
 
-        text = game.add.text(0, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
-        livesText = game.add.text(game.world.width - 100, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
-
+        
         this.load.image('dot', 'assets/dot.png');
         this.load.image('coin', 'assets/coin.png');
 
@@ -145,7 +143,12 @@ Pacman.prototype = {
 
     create: function () {
 
-        this.stage.backgroundColor = '#787878';
+        text = game.add.text(0, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
+        livesText = game.add.text(game.world.width - 100, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
+
+
+
+        this.stage.backgroundColor = '#000000';
         map = game.add.tilemap('map');
         map.addTilesetImage('tile_set_full', 'tiles');
         mapLayer = map.createLayer('Tile Layer 1');

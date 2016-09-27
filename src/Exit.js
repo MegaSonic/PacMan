@@ -148,5 +148,25 @@ function UpdateExit() {
 	else {
 		CheckAllDoors();
 	}
+
+	if (seExitState == ExitState.GATED && currentDots >= requiredDots) {
+		seExitState = ExitState.OPEN;
+		seExit.play('open');
+	}
+
+	if (neExitState == ExitState.GATED && currentDots >= requiredDots) {
+		neExitState = ExitState.OPEN;
+		neExit.play('open');
+	}
+
+	if (swExitState == ExitState.GATED && currentDots >= requiredDots) {
+		swExitState = ExitState.OPEN;
+		swExit.play('open');
+	}
+
+	if (nwExitState == ExitState.GATED && currentDots >= requiredDots) {
+		nwExitState = ExitState.OPEN;
+		nwExit.play('open');
+	}
 	
 }
