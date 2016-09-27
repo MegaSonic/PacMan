@@ -16,7 +16,9 @@ var counter3 = 0;
 var counter4 = 0;
 var powerCounter = 0;
 var poweredUp = false;
-var home = new Phaser.Point(16,16)
+var home = new Phaser.Point(16, 16)
+var levelWin = false;
+var stage = 1;
 
 var requiredDots = 100;
 var currentDots = 0;
@@ -321,31 +323,55 @@ Pacman.prototype = {
         if (this.dots.total === 0) {
             this.dots.callAll('revive');
         }
-        score += 10;
+        score += 10
         currentDots++;
         console.log(currentDots);
-        text.text = score;
+
+        text.text = '$' +score/100;
     },
 
     die: function () {
-        this.lives--;
 
-        if (this.lives < 1) {
-            this.lives = 3;
-            currentDots = 0;
-            score = 0;
-            game.state.start('GameOver');
-            //game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
-            // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
-            //this.pacman.kill();
+        if (levelWin === true) {
+            levelWin = false;
+            stage++;
+            game.state.start('Game');
         }
         else {
+            this.lives--;
 
-            // this.dots.callAll('revive');
-            this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
-            this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
-            this.move(Phaser.RIGHT);
+            if (this.lives < 1) {
+                this.lives = 3;
+                currentDots = 0;
+                score = 0;
+                game.state.start('GameOver');
+                //game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
+                // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
+                //this.pacman.kill();
+            }
         }
+
+        // this.dots.callAll('revive');
+        this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
+        this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
+        this.move(Phaser.RIGHT);
+
+        chaser.body.x = (this.gridsize * 2) + 12; 
+        chaser.body.y = (this.gridsize * 10) + 12;
+        chaser.body.velocity.x = Utilities.Speed;
+
+        racer.body.x = (this.gridsize * 29) + 12;
+        racer.body.y = (this.gridsize * 4) + 12;
+        racer.body.velocity.x = -Utilities.Speed;
+
+        tracer.body.x = (this.gridsize * 2) + 12;
+        tracer.body.y = (this.gridsize * 28) + 12;
+        tracer.body.velocity.x = Utilities.Speed;
+
+        caribou.body.x = (this.gridsize * 29) + 12;
+        caribou.body.y = (this.gridsize * 28) + 12;
+        caribou.body.velocity.x = -Utilities.Speed;
+        
         livesText.text = this.lives;
     },
 
@@ -751,32 +777,6 @@ Pacman.prototype = {
 
     },
 
-    checkExitCollision: function () {
-        if (this.pacman.x == nwExit.x + 12 && this.pacman.y == nwExit.y + 36) {
-            if (nwExitState == ExitState.OPEN) {
-                console.log("Took nw exit!");
-            }
-        }
-
-        else if (this.pacman.x == neExit.x + 12 && this.pacman.y == neExit.y + 36) {
-            if (neExitState == ExitState.OPEN) {
-                console.log("Took ne exit!");
-            }
-        }
-
-        else if (this.pacman.x == swExit.x + 12 && this.pacman.y == swExit.y + 36) {
-            if (swExitState == ExitState.OPEN) {
-                console.log("Took sw exit!");
-            }
-        }
-
-        else if (this.pacman.x == seExit.x + 12 && this.pacman.y == seExit.y + 36) {
-            if (seExitState == ExitState.OPEN) {
-                console.log("Took se exit!");
-            }
-        }
-    },
-
     checkStairsCollision: function() {
         if (this.pacman.x == leftStairs.x * 24 + 12 && this.pacman.y == leftStairs.y * 24 + 12) {
             if (!this.justTeleported) {
@@ -1178,24 +1178,32 @@ Pacman.prototype = {
         if (this.pacman.x == nwExit.x + 12 && this.pacman.y == nwExit.y + 36) {
             if (nwExitState == ExitState.OPEN) {
                 console.log("Took nw exit!");
+                levelWin = true;
+                this.die();
             }
         }
 
         else if (this.pacman.x == neExit.x + 12 && this.pacman.y == neExit.y + 36) {
             if (neExitState == ExitState.OPEN) {
                 console.log("Took ne exit!");
+                levelWin = true;
+                this.die();
             }
         }
 
         else if (this.pacman.x == swExit.x + 12 && this.pacman.y == swExit.y + 36) {
             if (swExitState == ExitState.OPEN) {
                 console.log("Took sw exit!");
+                levelWin = true;
+                this.die();
             }
         }
 
         else if (this.pacman.x == seExit.x + 12 && this.pacman.y == seExit.y + 36) {
             if (seExitState == ExitState.OPEN) {
                 console.log("Took se exit!");
+                levelWin = true;
+                this.die();
             }
         }
     },

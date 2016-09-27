@@ -21,5 +21,8 @@ var Utilities = {
     },
     tileToPixels: function (tileValue) {
         return tileValue * this.TILE_SIZE;
+    },
+    round: function(value) {
+        return Math.round(value * 100) / 100;
     }
 };
