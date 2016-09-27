@@ -21,6 +21,8 @@ var home = new Phaser.Point(15,17)
 var requiredDots = 100;
 var currentDots = 0;
 
+var leftStairs = new Phaser.Point(1, 16);
+var rightStairs = new Phaser.Point(30, 16);
 
 var PlayerState = { MALE: false, FEMALE: true };
 var playerGender = PlayerState.MALE;
@@ -126,6 +128,8 @@ Pacman.prototype = {
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
         game.load.image('pinky', 'assets/pinky.png');
+        game.load.image('leftStairs', 'assets/stairs_01.png');
+        game.load.image('rightStairs', 'assets/stairs_02.png');
         game.load.spritesheet('exitLights', 'assets/exitLightsNew.png', 24, 24);
         game.load.spritesheet('playerm', 'assets/playerm.png', 40, 40);
         game.load.spritesheet('playerf', 'assets/playerf.png', 40, 40);
@@ -149,9 +153,6 @@ Pacman.prototype = {
         //  The dots will need to be offset by 12px to put them back in the middle of the grid
         this.dots.setAll('x', 12, false, false, 1);
         this.dots.setAll('y', 12, false, false, 1);
-
-        this.stairs = this.add.physicsGroup();
-        map.createFromTiles(6, 6, 'dot', mapLayer, this.stairs);
 
         this.spray = this.add.physicsGroup();
         map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
@@ -358,7 +359,6 @@ Pacman.prototype = {
     },
 
     teleport: function () {
-        if (!this.justTeleported) {
             if (this.pacman.x > game.world.centerX) {
                 this.pacman.x = (1 * this.gridsize) + this.gridsize / 2;
                 this.pacman.y = (16 * this.gridsize) + this.gridsize / 2;
@@ -369,7 +369,7 @@ Pacman.prototype = {
                 this.pacman.y = (16 * this.gridsize) + this.gridsize / 2;
                 this.move(Phaser.LEFT);
             }
-        }
+        
     },
 
     //GUARD 1
@@ -725,6 +725,27 @@ Pacman.prototype = {
         }
     },
 
+    checkStairsCollision: function() {
+        if (this.pacman.x == leftStairs.x * 24 + 12 && this.pacman.y == leftStairs.y * 24 + 12) {
+            if (!this.justTeleported) {
+                console.log("Took left stairs!");
+                this.justTeleported = true;
+                this.teleport();
+            }
+        }
+        else if (this.pacman.x == rightStairs.x * 24 + 12 && this.pacman.y == rightStairs.y * 24 + 12) {
+            if (!this.justTeleported) {
+                console.log("Took right stairs!");
+                this.justTeleported = true;
+                this.teleport();
+            }
+        }
+        else {
+            this.justTeleported = false;
+        }
+        
+    },
+
 
     //GUARD 3
 
@@ -1049,12 +1070,7 @@ Pacman.prototype = {
         this.game.physics.arcade.collide(caribou, mapLayer);
         this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
 
-        if (this.physics.arcade.overlap(this.pacman, this.stairs)) {
-            this.teleport();
-        }
-        else {
-            this.justTeleported = false;
-        }
+        this.checkStairsCollision();
 
         if (this.physics.arcade.overlap(this.pacman, this.spray)) {
             this.powerPellet();
