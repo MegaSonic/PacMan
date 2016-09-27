@@ -5,7 +5,7 @@ var neExit = null;
 var swExit = null;
 var seExit = null;
 
-var ExitState = {OPEN: 0, CLOSED: 1};
+var ExitState = {OPEN: 0, CLOSED: 1, GATED: 2};
 
 
 var nwExitState = ExitState.CLOSED;
@@ -30,16 +30,21 @@ function StartExit() {
 	console.log("Added sprites?");
 
 	console.log(Utilities.TILE_SIZE);
+	nwExit.animations.add('gate', [2], 10, true);
 	nwExit.animations.add('close', [0], 20, true);
 	nwExit.animations.add('open', [1], 20, true);
+	
 
-
+	neExit.animations.add('gate', [2], 10, true);
 	neExit.animations.add('close', [0], 20, true);
 	neExit.animations.add('open', [1], 20, true);
+	
 
+	swExit.animations.add('gate', [2], 10, true);
 	swExit.animations.add('close', [0], 20, true);
 	swExit.animations.add('open', [1], 20, true);
 
+	seExit.animations.add('gate', [2], 10, true);
 	seExit.animations.add('close', [0], 20, true);
 	seExit.animations.add('open', [1], 20, true);
 
@@ -54,38 +59,80 @@ function StartExit() {
 }
 
 function CheckAllDoors() {
+	// If the gates pass the check and are open
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
-		nwExitState = ExitState.OPEN;
-		nwExit.play('open');
+		// If the player doesn't have enough money
+		if (currentDots < requiredDots) {
+			console.log('playing nw gated!');
+			nwExitState = ExitState.GATED;
+			nwExit.play('gate');
+		}
+		// If the player does have the money
+		else {
+			nwExitState = ExitState.OPEN;
+			nwExit.play('open');
+		}
 	}
+	// If the gate isn't open
 	else {
 		nwExitState = ExitState.CLOSED;
 		nwExit.play('close');
 	}
 
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
-		swExitState = ExitState.OPEN;
-		swExit.play('open');
+		if (currentDots < requiredDots) {
+			console.log('playing sw gated!');
+			swExit.animations.stop();
+			swExitState = ExitState.GATED;
+			swExit.play('gate');
+		}
+		else {
+			swExit.animations.stop();
+			swExitState = ExitState.OPEN;
+			swExit.play('open');
+		}
 	}
 	else {
+		swExit.animations.stop();
 		swExitState = ExitState.CLOSED;
 		swExit.play('close');
 	}
 
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
-		neExitState = ExitState.OPEN;
-		neExit.play('open');
+		if (currentDots < requiredDots) {
+			console.log('playing ne gated!');
+			neExit.animations.stop();
+			neExitState = ExitState.GATED;
+			neExit.play('gate');
+		}
+		else {
+			neExit.animations.stop();
+			neExitState = ExitState.OPEN;
+			neExit.play('open');
+		}
 	}
 	else {
+		neExit.animations.stop();
 		neExitState = ExitState.CLOSED;
 		neExit.play('close');
 	}
 
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
-		seExitState = ExitState.OPEN;
-		seExit.play('open');
+		if (currentDots < requiredDots) {
+			seExit.animations.stop();
+			console.log('playing se gated!');
+			seExitState = ExitState.GATED;
+			seExit.play('gate');
+			
+		}
+		else {
+			seExit.animations.stop();
+			seExitState = ExitState.OPEN;
+			seExit.play('open');
+		}
 	}
 	else {
+		seExit.animations.stop();
 		seExitState = ExitState.CLOSED;
 		seExit.play('close');
 	}

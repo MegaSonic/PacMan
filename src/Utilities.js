@@ -1,7 +1,7 @@
 var Utilities = {
     TILE_SIZE: 24,
-    mapWidth: 30 * 24,
-    mapHeight: 33 * 24,
+    mapWidth: 32 * 24,
+    mapHeight: 34 * 24,
     NONE: -1,
     Up: 0,
     Left: 1,
