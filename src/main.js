@@ -4,6 +4,7 @@ var game = new Phaser.Game(1000, 1000, Phaser.AUTO);
 var map, mapLayer, secondLayer;
 
 var score = 0;
+var dollarScore;
 var text;
 var textGroup;
 var livesText;
@@ -161,7 +162,8 @@ Pacman.prototype = {
         this.spray = this.add.physicsGroup();
         map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
 
-        map.setCollisionByExclusion([this.safetile, 21, 5, 4, 24, 28], true, mapLayer);
+        map.setCollisionByExclusion([this.safetile, 21, 4, 24, 28], true, mapLayer);
+        map.setCollision(5,true,mapLayer)
 
         console.log("After collision by exclusion");
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
@@ -323,11 +325,12 @@ Pacman.prototype = {
         if (this.dots.total === 0) {
             this.dots.callAll('revive');
         }
-        score += 10
+        score += 0.1
+        dollarScore = score.toFixed(2)
         currentDots++;
         console.log(currentDots);
 
-        text.text = '$' +score/100;
+        text.text = '$' + dollarScore;
     },
 
     die: function () {
@@ -1286,7 +1289,13 @@ Pacman.prototype = {
             counter2--;
         }
 
+        if (currentDots < requiredDots)
+        {
 
+        }
+        else {
+            map.setCollision(5, false, mapLayer)
+        }
 
         this.physics.arcade.overlap(this.pacman, racer, this.die, null, this);
         this.physics.arcade.overlap(this.pacman, chaser, this.die, null, this);
