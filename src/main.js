@@ -1,7 +1,7 @@
 
-var game = new Phaser.Game(900, 800, Phaser.AUTO);
+var game = new Phaser.Game(1000, 1000, Phaser.AUTO);
 
-var map, mapLayer;
+var map, mapLayer, secondLayer;
 
 var score = 0;
 var text;
@@ -69,7 +69,7 @@ var Pacman = function (game) {
     this.comingFrom = Utilities.Right;
 
 
-    this.safetile = 3;
+    this.safetile = 17;
     this.gridsize = 24;
 
     this.speed = 175;
@@ -94,10 +94,11 @@ var Pacman = function (game) {
 Pacman.prototype = {
 
     init: function () {
-        // this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.pageAlignHorizontally = true;
         this.scale.pageAlignVertically = true;
-        Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
+        //Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
+        Phaser.Canvas.setSmoothingEnabled(this.game.canvas, false);
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
 
@@ -111,9 +112,14 @@ Pacman.prototype = {
         livesText = game.add.text(game.world.width - 100, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
 
         this.load.image('dot', 'assets/dot.png');
+        this.load.image('coin', 'assets/coin.png');
 
-        this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.image('tiles', 'assets/tile_set.png');
+        //this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
+        //this.load.image('tiles', 'assets/tile_set.png');
+
+        this.load.tilemap('map', 'assets/pac_maze_final.json', null, Phaser.Tilemap.TILED_JSON);
+        this.load.image('tiles', 'assets/tile_set_full.png');
+
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
         game.load.image('pinky', 'assets/pinky.png');
@@ -123,18 +129,19 @@ Pacman.prototype = {
         game.load.image('chaser', 'assets/chaser.png');
     },
 
-
+    
 
     create: function () {
 
         this.stage.backgroundColor = '#787878';
         map = game.add.tilemap('map');
-        map.addTilesetImage('pacman', 'tiles');
+        map.addTilesetImage('tile_set_full', 'tiles');
         mapLayer = map.createLayer('Tile Layer 1');
+        secondLayer = map.createLayer('Tile Layer 2');
         mapLayer.resizeWorld();
 
         this.dots = this.add.physicsGroup();
-        map.createFromTiles(3, this.safetile, 'dot', mapLayer, this.dots);
+        map.createFromTiles(21, 17, 'coin', secondLayer, this.dots);
 
         //  The dots will need to be offset by 12px to put them back in the middle of the grid
         this.dots.setAll('x', 12, false, false, 1);
@@ -146,14 +153,17 @@ Pacman.prototype = {
         this.spray = this.add.physicsGroup();
         map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
 
-        map.setCollisionByExclusion([this.safetile, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15], true, mapLayer);
+        map.setCollisionByExclusion([this.safetile, 21, 5, 4, 24, 28], true, mapLayer);
 
+        console.log("After collision by exclusion");
         this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
         this.pacman.animations.add('walkDown', [0, 1, 2, 3], 12, true);
         this.pacman.animations.add('walkRight', [8, 9, 10, 11], 12, true);
         this.pacman.animations.add('walkUp', [4, 5, 6, 7], 12, true);
+
+        console.log("after pacman added");
 
         this.physics.arcade.enable(this.pacman);
         this.pacman.body.setSize(24, 24, 0, 0);
