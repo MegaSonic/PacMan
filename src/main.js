@@ -23,6 +23,7 @@ var currentDots = 0;
 
 var leftStairs = new Phaser.Point(1, 16);
 var rightStairs = new Phaser.Point(30, 16);
+var house;
 
 var PlayerState = { MALE: false, FEMALE: true };
 var playerGender = PlayerState.MALE;
@@ -134,6 +135,7 @@ Pacman.prototype = {
         game.load.spritesheet('playerm', 'assets/playerm.png', 40, 40);
         game.load.spritesheet('playerf', 'assets/playerf.png', 40, 40);
         game.load.image('chaser', 'assets/chaser.png');
+        game.load.image('house', 'assets/Guard_station.png');
     },
 
     
@@ -182,7 +184,7 @@ Pacman.prototype = {
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
 
-
+        house = this.add.sprite((this.gridsize * 12), (this.gridsize * 14), 'house', 0);
 
         // GUARD 1
         chaser = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 10) + 12, 'pinky', 0);
