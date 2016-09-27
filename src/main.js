@@ -18,6 +18,9 @@ var powerCounter = 0;
 var poweredUp = false;
 var home = new Phaser.Point(15,17)
 
+var requiredDots = 100;
+var currentDots = 0;
+
 
 var PlayerState = { MALE: false, FEMALE: true };
 var playerGender = PlayerState.MALE;
@@ -123,7 +126,7 @@ Pacman.prototype = {
         this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
         this.load.image('ghost', 'assets/ghost.png');
         game.load.image('pinky', 'assets/pinky.png');
-        game.load.spritesheet('exitLights', 'assets/exitLights.png', 24, 24);
+        game.load.spritesheet('exitLights', 'assets/exitLightsNew.png', 24, 24);
         game.load.spritesheet('playerm', 'assets/playerm.png', 40, 40);
         game.load.spritesheet('playerf', 'assets/playerf.png', 40, 40);
         game.load.image('chaser', 'assets/chaser.png');
@@ -316,6 +319,8 @@ Pacman.prototype = {
             this.dots.callAll('revive');
         }
         score += 10;
+        currentDots++;
+        console.log(currentDots);
         text.text = score;
     },
 
@@ -323,6 +328,9 @@ Pacman.prototype = {
         this.lives--;
 
         if (this.lives < 1) {
+            this.lives = 3;
+            currentDots = 0;
+            score = 0;
             game.state.start('GameOver');
             //game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
             // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
@@ -330,7 +338,7 @@ Pacman.prototype = {
         }
         else {
 
-            this.dots.callAll('revive');
+            // this.dots.callAll('revive');
             this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
             this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
             this.move(Phaser.RIGHT);
