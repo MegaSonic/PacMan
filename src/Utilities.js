@@ -8,7 +8,7 @@ var Utilities = {
     Down: 2,
     Right: 3,
     Speed: 160,
-    Speed2: 100,
+    Speed2: 50,
     Speed3: 200,
     Prox: 500,
     arrayContains: function (array, object) {
