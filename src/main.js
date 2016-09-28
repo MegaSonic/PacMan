@@ -41,6 +41,8 @@ var chaserdirections = [null, null, null, null, null];
 var chaserComingFrom = Utilities.Left;
 var chasermarker = new Phaser.Point();
 var chaserReturn = false;
+var chaserSpeed;
+
 
 //RACER VARS
 var racer;
@@ -48,6 +50,7 @@ var racerdirections = [null, null, null, null, null];
 var racerComingFrom = Utilities.Right;
 var racermarker = new Phaser.Point();
 var racerReturn = false;
+var racerSpeed;
 
 //TRACER VARS
 var tracer;
@@ -55,6 +58,7 @@ var tracerdirections = [null, null, null, null, null];
 var tracerComingFrom = Utilities.Left;
 var tracermarker = new Phaser.Point();
 var tracerReturn = false;
+var tracerSpeed;
 
 //CARIBOU
 var caribou;
@@ -62,6 +66,7 @@ var cariboudirections = [null, null, null, null, null];
 var caribouComingFrom = Utilities.Right;
 var cariboumarker = new Phaser.Point();
 var caribouReturn = false;
+var caribouSpeed;
 
 var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1),
     new Phaser.Point(2, 4), new Phaser.Point(29, 4),
@@ -84,7 +89,7 @@ var Pacman = function (game) {
     this.safetile = 17;
     this.gridsize = 24;
 
-    this.speed = 175;
+    this.speed = 120;
     this.threshold = 6;
     this.AIthreshold = 2;
     this.lives = 3;
@@ -207,7 +212,6 @@ Pacman.prototype = {
         chaser.anchor.set(0.5);
         this.game.physics.enable(chaser, Phaser.Physics.ARCADE);
         chaser.body.setSize(24, 24, 0, 0);
-        chaser.body.velocity.x = Utilities.Speed;
         chaser.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
         chaser.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
         chaser.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
@@ -217,8 +221,7 @@ Pacman.prototype = {
         chaser.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
         chaser.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         chaser.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
-
-
+        chaser.body.velocity.x = Utilities.Speed2;
 
 
         // GUARD 2
@@ -226,7 +229,6 @@ Pacman.prototype = {
         racer.anchor.set(0.5);
         this.game.physics.enable(racer, Phaser.Physics.ARCADE);
         racer.body.setSize(24, 24, 0, 0);
-        racer.body.velocity.x = -Utilities.Speed;
         racer.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
         racer.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
         racer.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
@@ -236,13 +238,13 @@ Pacman.prototype = {
         racer.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
         racer.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         racer.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
+        racer.body.velocity.x = -Utilities.Speed2;
 
         // GUARD 3
         tracer = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 28) + 12, 'guard', 0);
         tracer.anchor.set(0.5);
         this.game.physics.enable(tracer, Phaser.Physics.ARCADE);
         tracer.body.setSize(24, 24, 0, 0);
-        tracer.body.velocity.x = Utilities.Speed;
         tracer.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
         tracer.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
         tracer.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
@@ -252,13 +254,14 @@ Pacman.prototype = {
         tracer.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
         tracer.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         tracer.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
+        tracer.body.velocity.x = Utilities.Speed2;
+
 
         // GUARD 4
         caribou = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 28) + 12, 'guard', 0);
         caribou.anchor.set(0.5);
         this.game.physics.enable(caribou, Phaser.Physics.ARCADE);
         caribou.body.setSize(24, 24, 0, 0);
-        caribou.body.velocity.x = -Utilities.Speed;
         caribou.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
         caribou.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
         caribou.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
@@ -268,6 +271,7 @@ Pacman.prototype = {
         caribou.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
         caribou.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         caribou.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
+        caribou.body.velocity.x = -Utilities.Speed2;
 
         textGroup = game.add.group();
         textGroup.add(text);
@@ -412,19 +416,19 @@ Pacman.prototype = {
 
         chaser.body.x = (this.gridsize * 2) + 12; 
         chaser.body.y = (this.gridsize * 10) + 12;
-        chaser.body.velocity.x = Utilities.Speed;
+        chaser.body.velocity.x = Utilities.Speed2;
 
         racer.body.x = (this.gridsize * 29) + 12;
         racer.body.y = (this.gridsize * 4) + 12;
-        racer.body.velocity.x = -Utilities.Speed;
+        racer.body.velocity.x = -Utilities.Speed2;
 
         tracer.body.x = (this.gridsize * 2) + 12;
         tracer.body.y = (this.gridsize * 28) + 12;
-        tracer.body.velocity.x = Utilities.Speed;
+        tracer.body.velocity.x = Utilities.Speed2;
 
         caribou.body.x = (this.gridsize * 29) + 12;
         caribou.body.y = (this.gridsize * 28) + 12;
-        caribou.body.velocity.x = -Utilities.Speed;
+        caribou.body.velocity.x = -Utilities.Speed2;
         
         livesText.text = this.lives;
     },
@@ -540,7 +544,7 @@ Pacman.prototype = {
                     var xDiff = this.pacman.body.x - chaser.body.x;
                     var yDiff = this.pacman.body.y - chaser.body.y;
 
-                    if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) < Utilities.Prox || Math.abs(yDiff) < Utilities.Prox) {
                         if (Math.abs(xDiff) > Math.abs(yDiff)) {
                             if (xDiff > 0) {
                                 if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
@@ -611,29 +615,56 @@ Pacman.prototype = {
 
     chasermove: function (direction) {
         if (direction === Utilities.Up) {
-            chaser.body.velocity.y = -(Utilities.Speed);
+            chaser.body.velocity.y = -(Utilities.Speed2);
             chaser.body.velocity.x = 0;
             chaserComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
-            chaser.body.velocity.y = (Utilities.Speed);
+            chaser.body.velocity.y = (Utilities.Speed2);
             chaser.body.velocity.x = 0;
             chaserComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
-            chaser.body.velocity.x = -(Utilities.Speed);
+            chaser.body.velocity.x = -(Utilities.Speed2);
             chaser.body.velocity.y = 0;
             chaserComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
-            chaser.body.velocity.x = (Utilities.Speed);
+            chaser.body.velocity.x = (Utilities.Speed2);
             chaser.body.velocity.y = 0;
             chaserComingFrom = Utilities.Left;
         }
     },
 
+    chaserSpeedUp: function(){
 
+        var xDiff = this.pacman.body.x - chaser.body.x;
+        var yDiff = this.pacman.body.y - chaser.body.y;
+        if ((Math.abs(xDiff) < 125 && Math.abs(yDiff) < 125) || chaserReturn === true){
+
+            if (chaserComingFrom === Utilities.Down) {
+                chaser.body.velocity.y = -(Utilities.Speed3);
+                chaser.body.velocity.x = 0;
+
+            }
+            else if (chaserComingFrom === Utilities.Up) {
+                chaser.body.velocity.y = (Utilities.Speed3);
+                chaser.body.velocity.x = 0;
+            }
+            else if (chaserComingFrom === Utilities.Right) {
+                chaser.body.velocity.x = -(Utilities.Speed3);
+                chaser.body.velocity.y = 0;
+            }
+            else if (chaserComingFrom === Utilities.Left) {
+                chaser.body.velocity.x = (Utilities.Speed3);
+                chaser.body.velocity.y = 0;
+            }
+           
+
+        }
+
+    },
 
     chaserSetAndMove: function (decisionIndex, pushDirection) {
         chaser.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
@@ -685,7 +716,7 @@ Pacman.prototype = {
                         if (xDiff > 0) {
                             if (racerdirections[3].index === this.safetile || racerdirections[3].index === 8) {
                                 this.racerSetAndMove(i, 3);
-                                counter = 10;
+                                counter2 = 10;
                                 var done = true;
 
                             }
@@ -693,7 +724,7 @@ Pacman.prototype = {
                         else {
                             if (racerdirections[1].index === this.safetile || racerdirections[1].index === 8) {
                                 this.racerSetAndMove(i, 1);
-                                counter = 10;
+                                counter2 = 10;
                                 var done = true;
 
                             }
@@ -703,7 +734,7 @@ Pacman.prototype = {
                         if (yDiff > 0) {
                             if (racerdirections[2].index === this.safetile || racerdirections[2].index === 8) {
                                 this.racerSetAndMove(i, 2);
-                                counter = 10;
+                                counter2 = 10;
                                 var done = true;
 
                             }
@@ -711,7 +742,7 @@ Pacman.prototype = {
                         else {
                             if (racerdirections[0].index === this.safetile || racerdirections[0].index === 8) {
                                 this.racerSetAndMove(i, 0);
-                                counter = 10;
+                                counter2 = 10;
                                 var done = true;
                             }
                         }
@@ -735,7 +766,7 @@ Pacman.prototype = {
                             if (xDiff > 0) {
                                 if (racerdirections[3].index === this.safetile || racerdirections[3].index === 8) {
                                     this.racerSetAndMove(i, 3);
-                                    counter = 10;
+                                    counter2 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -743,7 +774,7 @@ Pacman.prototype = {
                             else {
                                 if (racerdirections[1].index === this.safetile || racerdirections[1].index === 8) {
                                     this.racerSetAndMove(i, 1);
-                                    counter = 10;
+                                    counter2 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -753,7 +784,7 @@ Pacman.prototype = {
                             if (yDiff > 0) {
                                 if (racerdirections[2].index === this.safetile || racerdirections[2].index === 8) {
                                     this.racerSetAndMove(i, 2);
-                                    counter = 10;
+                                    counter2 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -761,7 +792,7 @@ Pacman.prototype = {
                             else {
                                 if (racerdirections[0].index === this.safetile || racerdirections[0].index === 8) {
                                     this.racerSetAndMove(i, 0);
-                                    counter = 10;
+                                    counter2 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -774,7 +805,7 @@ Pacman.prototype = {
                                 if (racerdirections[rand % 4].index === this.safetile || racerdirections[rand % 4].index === 8) {
                                     tempDir = rand % 4;
                                     this.racerSetAndMove(i, tempDir);
-                                    counter = 10;
+                                    counter2 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -800,26 +831,55 @@ Pacman.prototype = {
 
     racermove: function (direction) {
         if (direction === Utilities.Up) {
-            racer.body.velocity.y = -(Utilities.Speed);
+            racer.body.velocity.y = -(Utilities.Speed2);
             racer.body.velocity.x = 0;
             racerComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
-            racer.body.velocity.y = (Utilities.Speed);
+            racer.body.velocity.y = (Utilities.Speed2);
             racer.body.velocity.x = 0;
             racerComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
-            racer.body.velocity.x = -(Utilities.Speed);
+            racer.body.velocity.x = -(Utilities.Speed2);
             racer.body.velocity.y = 0;
             racerComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
-            racer.body.velocity.x = (Utilities.Speed);
+            racer.body.velocity.x = (Utilities.Speed2);
             racer.body.velocity.y = 0;
             racerComingFrom = Utilities.Left;
         }
+    },
+
+    racerSpeedUp: function(){
+
+        var xDiff = this.pacman.body.x - racer.body.x;
+        var yDiff = this.pacman.body.y - racer.body.y;
+        if ((Math.abs(xDiff) < 125 && Math.abs(yDiff) < 125) || racerReturn === true){
+
+            if (racerComingFrom === Utilities.Down) {
+                racer.body.velocity.y = -(Utilities.Speed3);
+                racer.body.velocity.x = 0;
+
+            }
+            else if (racerComingFrom === Utilities.Up) {
+                racer.body.velocity.y = (Utilities.Speed3);
+                racer.body.velocity.x = 0;
+            }
+            else if (racerComingFrom === Utilities.Right) {
+                racer.body.velocity.x = -(Utilities.Speed3);
+                racer.body.velocity.y = 0;
+            }
+            else if (racerComingFrom === Utilities.Left) {
+                racer.body.velocity.x = (Utilities.Speed3);
+                racer.body.velocity.y = 0;
+            }
+           
+
+        }
+
     },
 
 
@@ -894,7 +954,7 @@ Pacman.prototype = {
                         if (xDiff > 0) {
                             if (tracerdirections[3].index === this.safetile || tracerdirections[3].index === 8) {
                                 this.tracerSetAndMove(i, 3);
-                                counter = 10;
+                                counter3 = 10;
                                 var done = true;
 
                             }
@@ -902,7 +962,7 @@ Pacman.prototype = {
                         else {
                             if (tracerdirections[1].index === this.safetile || tracerdirections[1].index === 8) {
                                 this.tracerSetAndMove(i, 1);
-                                counter = 10;
+                                counter3 = 10;
                                 var done = true;
 
                             }
@@ -912,7 +972,7 @@ Pacman.prototype = {
                         if (yDiff > 0) {
                             if (tracerdirections[2].index === this.safetile || tracerdirections[2].index === 8) {
                                 this.tracerSetAndMove(i, 2);
-                                counter = 10;
+                                counter3 = 10;
                                 var done = true;
 
                             }
@@ -920,7 +980,7 @@ Pacman.prototype = {
                         else {
                             if (tracerdirections[0].index === this.safetile || tracerdirections[0].index === 8) {
                                 this.tracerSetAndMove(i, 0);
-                                counter = 10;
+                                counter3 = 10;
                                 var done = true;
                             }
                         }
@@ -944,7 +1004,7 @@ Pacman.prototype = {
                             if (xDiff > 0) {
                                 if (tracerdirections[3].index === this.safetile || tracerdirections[3].index === 8) {
                                     this.tracerSetAndMove(i, 3);
-                                    counter = 10;
+                                    counter3 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -952,7 +1012,7 @@ Pacman.prototype = {
                             else {
                                 if (tracerdirections[1].index === this.safetile || tracerdirections[1].index === 8) {
                                     this.tracerSetAndMove(i, 1);
-                                    counter = 10;
+                                    counter3 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -962,7 +1022,7 @@ Pacman.prototype = {
                             if (yDiff > 0) {
                                 if (tracerdirections[2].index === this.safetile || tracerdirections[2].index === 8) {
                                     this.tracerSetAndMove(i, 2);
-                                    counter = 10;
+                                    counter3 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -970,7 +1030,7 @@ Pacman.prototype = {
                             else {
                                 if (tracerdirections[0].index === this.safetile || tracerdirections[0].index === 8) {
                                     this.tracerSetAndMove(i, 0);
-                                    counter = 10;
+                                    counter3 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -983,7 +1043,7 @@ Pacman.prototype = {
                                 if (tracerdirections[rand % 4].index === this.safetile || tracerdirections[rand % 4].index === 8) {
                                     tempDir = rand % 4;
                                     this.tracerSetAndMove(i, tempDir);
-                                    counter = 10;
+                                    counter3 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -1009,26 +1069,56 @@ Pacman.prototype = {
 
     tracermove: function (direction) {
         if (direction === Utilities.Up) {
-            tracer.body.velocity.y = -(Utilities.Speed);
+            tracer.body.velocity.y = -(Utilities.Speed2);
             tracer.body.velocity.x = 0;
             tracerComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
-            tracer.body.velocity.y = (Utilities.Speed);
+            tracer.body.velocity.y = (Utilities.Speed2);
             tracer.body.velocity.x = 0;
             tracerComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
-            tracer.body.velocity.x = -(Utilities.Speed);
+            tracer.body.velocity.x = -(Utilities.Speed2);
             tracer.body.velocity.y = 0;
             tracerComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
-            tracer.body.velocity.x = (Utilities.Speed);
+            tracer.body.velocity.x = (Utilities.Speed2);
             tracer.body.velocity.y = 0;
             tracerComingFrom = Utilities.Left;
         }
+    },
+
+
+    tracerSpeedUp: function () {
+
+        var xDiff = this.pacman.body.x - tracer.body.x;
+        var yDiff = this.pacman.body.y - tracer.body.y;
+        if ((Math.abs(xDiff) < 125 && Math.abs(yDiff) < 125) || tracerReturn === true) {
+
+            if (tracerComingFrom === Utilities.Down) {
+                tracer.body.velocity.y = -(Utilities.Speed3);
+                tracer.body.velocity.x = 0;
+
+            }
+            else if (tracerComingFrom === Utilities.Up) {
+                tracer.body.velocity.y = (Utilities.Speed3);
+                tracer.body.velocity.x = 0;
+            }
+            else if (tracerComingFrom === Utilities.Right) {
+                tracer.body.velocity.x = -(Utilities.Speed3);
+                tracer.body.velocity.y = 0;
+            }
+            else if (tracerComingFrom === Utilities.Left) {
+                tracer.body.velocity.x = (Utilities.Speed3);
+                tracer.body.velocity.y = 0;
+            }
+
+
+        }
+
     },
 
 
@@ -1082,7 +1172,7 @@ Pacman.prototype = {
                         if (xDiff > 0) {
                             if (cariboudirections[3].index === this.safetile || cariboudirections[3].index === 8) {
                                 this.caribouSetAndMove(i, 3);
-                                counter = 10;
+                                counter4 = 10;
                                 var done = true;
 
                             }
@@ -1090,7 +1180,7 @@ Pacman.prototype = {
                         else {
                             if (cariboudirections[1].index === this.safetile || cariboudirections[1].index === 8) {
                                 this.caribouSetAndMove(i, 1);
-                                counter = 10;
+                                counter4 = 10;
                                 var done = true;
 
                             }
@@ -1100,7 +1190,7 @@ Pacman.prototype = {
                         if (yDiff > 0) {
                             if (cariboudirections[2].index === this.safetile || cariboudirections[2].index === 8) {
                                 this.caribouSetAndMove(i, 2);
-                                counter = 10;
+                                counter4 = 10;
                                 var done = true;
 
                             }
@@ -1108,7 +1198,7 @@ Pacman.prototype = {
                         else {
                             if (cariboudirections[0].index === this.safetile || cariboudirections[0].index === 8) {
                                 this.caribouSetAndMove(i, 0);
-                                counter = 10;
+                                counter4 = 10;
                                 var done = true;
                             }
                         }
@@ -1132,7 +1222,7 @@ Pacman.prototype = {
                             if (xDiff > 0) {
                                 if (cariboudirections[3].index === this.safetile || cariboudirections[3].index === 8) {
                                     this.caribouSetAndMove(i, 3);
-                                    counter = 10;
+                                    counter4 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -1140,7 +1230,7 @@ Pacman.prototype = {
                             else {
                                 if (cariboudirections[1].index === this.safetile || cariboudirections[1].index === 8) {
                                     this.caribouSetAndMove(i, 1);
-                                    counter = 10;
+                                    counter4 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -1150,7 +1240,7 @@ Pacman.prototype = {
                             if (yDiff > 0) {
                                 if (cariboudirections[2].index === this.safetile || cariboudirections[2].index === 8) {
                                     this.caribouSetAndMove(i, 2);
-                                    counter = 10;
+                                    counter4 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -1158,7 +1248,7 @@ Pacman.prototype = {
                             else {
                                 if (cariboudirections[0].index === this.safetile || cariboudirections[0].index === 8) {
                                     this.caribouSetAndMove(i, 0);
-                                    counter = 10;
+                                    counter4 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -1171,7 +1261,7 @@ Pacman.prototype = {
                                 if (cariboudirections[rand % 4].index === this.safetile || cariboudirections[rand % 4].index === 8) {
                                     tempDir = rand % 4;
                                     this.caribouSetAndMove(i, tempDir);
-                                    counter = 10;
+                                    counter4 = 10;
                                     var done = true;
                                     break;
                                 }
@@ -1197,26 +1287,55 @@ Pacman.prototype = {
 
     cariboumove: function (direction) {
         if (direction === Utilities.Up) {
-            caribou.body.velocity.y = -(Utilities.Speed);
+            caribou.body.velocity.y = -(Utilities.Speed2);
             caribou.body.velocity.x = 0;
             caribouComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
-            caribou.body.velocity.y = (Utilities.Speed);
+            caribou.body.velocity.y = (Utilities.Speed2);
             caribou.body.velocity.x = 0;
             caribouComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
-            caribou.body.velocity.x = -(Utilities.Speed);
+            caribou.body.velocity.x = -(Utilities.Speed2);
             caribou.body.velocity.y = 0;
             caribouComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
-            caribou.body.velocity.x = (Utilities.Speed);
+            caribou.body.velocity.x = (Utilities.Speed2);
             caribou.body.velocity.y = 0;
             caribouComingFrom = Utilities.Left;
         }
+    },
+
+    caribouSpeedUp: function () {
+
+        var xDiff = this.pacman.body.x - caribou.body.x;
+        var yDiff = this.pacman.body.y - caribou.body.y;
+        if ((Math.abs(xDiff) < 125 && Math.abs(yDiff) < 125) || caribouReturn === true) {
+
+            if (caribouComingFrom === Utilities.Down) {
+                caribou.body.velocity.y = -(Utilities.Speed3);
+                caribou.body.velocity.x = 0;
+
+            }
+            else if (caribouComingFrom === Utilities.Up) {
+                caribou.body.velocity.y = (Utilities.Speed3);
+                caribou.body.velocity.x = 0;
+            }
+            else if (caribouComingFrom === Utilities.Right) {
+                caribou.body.velocity.x = -(Utilities.Speed3);
+                caribou.body.velocity.y = 0;
+            }
+            else if (caribouComingFrom === Utilities.Left) {
+                caribou.body.velocity.x = (Utilities.Speed3);
+                caribou.body.velocity.y = 0;
+            }
+
+
+        }
+
     },
 
 
@@ -1326,18 +1445,18 @@ Pacman.prototype = {
             counter2--;
         }
 
-        if (counter2 === 0) {
+        if (counter3 === 0) {
             this.tracerAI();
         }
         else {
-            counter2--;
+            counter3--;
         }
 
-        if (counter2 === 0) {
+        if (counter4 === 0) {
             this.caribouAI();
         }
         else {
-            counter2--;
+            counter4--;
         }
 
         if (currentDots < requiredDots)
@@ -1347,6 +1466,11 @@ Pacman.prototype = {
         else {
             map.setCollision(5, false, mapLayer)
         }
+        
+        this.chaserSpeedUp();
+        this.racerSpeedUp();
+        this.tracerSpeedUp();
+        this.caribouSpeedUp();
 
         this.physics.arcade.overlap(this.pacman, racer, this.die, null, this);
         this.physics.arcade.overlap(this.pacman, chaser, this.die, null, this);
