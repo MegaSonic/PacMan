@@ -31,6 +31,9 @@ var house;
 var PlayerState = { MALE: false, FEMALE: true };
 var playerGender = PlayerState.MALE;
 
+var leftRails;
+var rightRails;
+
 
 //CHASER VARS
 var chaser;
@@ -137,6 +140,7 @@ Pacman.prototype = {
         game.load.spritesheet('playerf', 'assets/playerf.png', 40, 40);
         game.load.image('chaser', 'assets/chaser.png');
         game.load.image('house', 'assets/Guard_station.png');
+        game.load.image('rails', 'assets/Rails.png');
     },
 
     
@@ -182,6 +186,10 @@ Pacman.prototype = {
         this.pacman.body.setSize(24, 24, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
 
+
+
+        leftRails = game.add.sprite(-30, 0, 'rails', 0);
+        rightRails = game.add.sprite(900, 0, 'rails', 0);
 
         // dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         // dieButton.onDown.add(this.die, this);
