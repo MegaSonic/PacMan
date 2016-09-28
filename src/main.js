@@ -141,6 +141,7 @@ Pacman.prototype = {
         game.load.image('chaser', 'assets/chaser.png');
         game.load.image('house', 'assets/Guard_station.png');
         game.load.image('rails', 'assets/Rails.png');
+        game.load.spritesheet('guard', 'assets/police.png', 40, 40);
     },
 
     
@@ -202,32 +203,71 @@ Pacman.prototype = {
         house = this.add.sprite((this.gridsize * 12), (this.gridsize * 14), 'house', 0);
 
         // GUARD 1
-        chaser = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 10) + 12, 'pinky', 0);
+        chaser = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 10) + 12, 'guard', 0);
         chaser.anchor.set(0.5);
         this.game.physics.enable(chaser, Phaser.Physics.ARCADE);
         chaser.body.setSize(24, 24, 0, 0);
         chaser.body.velocity.x = Utilities.Speed;
+        chaser.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
+        chaser.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
+        chaser.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
+        chaser.animations.add('walkDownAngry', [12, 13, 14, 15], 12, true);
+        chaser.animations.add('walkUpAngry', [16, 17, 18, 19], 12, true);
+        chaser.animations.add('walkRightAngry', [20, 21, 22, 23], 12, true);
+        chaser.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
+        chaser.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
+        chaser.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
+
+
+
 
         // GUARD 2
-        racer = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 4) + 12, 'chaser', 0);
+        racer = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 4) + 12, 'guard', 0);
         racer.anchor.set(0.5);
         this.game.physics.enable(racer, Phaser.Physics.ARCADE);
         racer.body.setSize(24, 24, 0, 0);
         racer.body.velocity.x = -Utilities.Speed;
+        racer.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
+        racer.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
+        racer.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
+        racer.animations.add('walkDownAngry', [12, 13, 14, 15], 12, true);
+        racer.animations.add('walkUpAngry', [16, 17, 18, 19], 12, true);
+        racer.animations.add('walkRightAngry', [20, 21, 22, 23], 12, true);
+        racer.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
+        racer.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
+        racer.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
 
         // GUARD 3
-        tracer = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
+        tracer = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 28) + 12, 'guard', 0);
         tracer.anchor.set(0.5);
         this.game.physics.enable(tracer, Phaser.Physics.ARCADE);
         tracer.body.setSize(24, 24, 0, 0);
         tracer.body.velocity.x = Utilities.Speed;
+        tracer.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
+        tracer.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
+        tracer.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
+        tracer.animations.add('walkDownAngry', [12, 13, 14, 15], 12, true);
+        tracer.animations.add('walkUpAngry', [16, 17, 18, 19], 12, true);
+        tracer.animations.add('walkRightAngry', [20, 21, 22, 23], 12, true);
+        tracer.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
+        tracer.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
+        tracer.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
 
         // GUARD 4
-        caribou = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
+        caribou = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 28) + 12, 'guard', 0);
         caribou.anchor.set(0.5);
         this.game.physics.enable(caribou, Phaser.Physics.ARCADE);
         caribou.body.setSize(24, 24, 0, 0);
         caribou.body.velocity.x = -Utilities.Speed;
+        caribou.animations.add('walkDownBored', [0, 1, 2, 3], 12, true);
+        caribou.animations.add('walkUpBored', [4, 5, 6, 7], 12, true);
+        caribou.animations.add('walkRightBored', [8, 9, 10, 11], 12, true);
+        caribou.animations.add('walkDownAngry', [12, 13, 14, 15], 12, true);
+        caribou.animations.add('walkUpAngry', [16, 17, 18, 19], 12, true);
+        caribou.animations.add('walkRightAngry', [20, 21, 22, 23], 12, true);
+        caribou.animations.add('walkDownShocked', [24, 25, 26, 27], 12, true);
+        caribou.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
+        caribou.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
 
         textGroup = game.add.group();
         textGroup.add(text);
