@@ -38,6 +38,7 @@ var chaserdirections = [null, null, null, null, null];
 var chaserComingFrom = Utilities.Left;
 var chasermarker = new Phaser.Point();
 var chaserReturn = false;
+var chaserSpeed;
 
 
 //RACER VARS
@@ -46,6 +47,7 @@ var racerdirections = [null, null, null, null, null];
 var racerComingFrom = Utilities.Right;
 var racermarker = new Phaser.Point();
 var racerReturn = false;
+var racerSpeed;
 
 //TRACER VARS
 var tracer;
@@ -53,6 +55,7 @@ var tracerdirections = [null, null, null, null, null];
 var tracerComingFrom = Utilities.Left;
 var tracermarker = new Phaser.Point();
 var tracerReturn = false;
+var tracerSpeed;
 
 //CARIBOU
 var caribou;
@@ -60,6 +63,7 @@ var cariboudirections = [null, null, null, null, null];
 var caribouComingFrom = Utilities.Right;
 var cariboumarker = new Phaser.Point();
 var caribouReturn = false;
+var caribouSpeed;
 
 var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1),
     new Phaser.Point(2, 4), new Phaser.Point(29, 4),
@@ -82,7 +86,7 @@ var Pacman = function (game) {
     this.safetile = 17;
     this.gridsize = 24;
 
-    this.speed = 175;
+    this.speed = 120;
     this.threshold = 6;
     this.AIthreshold = 2;
     this.lives = 3;
@@ -199,28 +203,28 @@ Pacman.prototype = {
         chaser.anchor.set(0.5);
         this.game.physics.enable(chaser, Phaser.Physics.ARCADE);
         chaser.body.setSize(24, 24, 0, 0);
-        chaser.body.velocity.x = Utilities.Speed;
+        chaser.body.velocity.x = Utilities.Speed2;
 
         // GUARD 2
         racer = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 4) + 12, 'chaser', 0);
         racer.anchor.set(0.5);
         this.game.physics.enable(racer, Phaser.Physics.ARCADE);
         racer.body.setSize(24, 24, 0, 0);
-        racer.body.velocity.x = -Utilities.Speed;
+        racer.body.velocity.x = -Utilities.Speed2;
 
         // GUARD 3
         tracer = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
         tracer.anchor.set(0.5);
         this.game.physics.enable(tracer, Phaser.Physics.ARCADE);
         tracer.body.setSize(24, 24, 0, 0);
-        tracer.body.velocity.x = Utilities.Speed;
+        tracer.body.velocity.x = Utilities.Speed2;
 
         // GUARD 4
         caribou = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 28) + 12, 'chaser', 0);
         caribou.anchor.set(0.5);
         this.game.physics.enable(caribou, Phaser.Physics.ARCADE);
         caribou.body.setSize(24, 24, 0, 0);
-        caribou.body.velocity.x = -Utilities.Speed;
+        caribou.body.velocity.x = -Utilities.Speed2;
 
         textGroup = game.add.group();
         textGroup.add(text);
@@ -365,19 +369,19 @@ Pacman.prototype = {
 
         chaser.body.x = (this.gridsize * 2) + 12; 
         chaser.body.y = (this.gridsize * 10) + 12;
-        chaser.body.velocity.x = Utilities.Speed;
+        chaser.body.velocity.x = Utilities.Speed2;
 
         racer.body.x = (this.gridsize * 29) + 12;
         racer.body.y = (this.gridsize * 4) + 12;
-        racer.body.velocity.x = -Utilities.Speed;
+        racer.body.velocity.x = -Utilities.Speed2;
 
         tracer.body.x = (this.gridsize * 2) + 12;
         tracer.body.y = (this.gridsize * 28) + 12;
-        tracer.body.velocity.x = Utilities.Speed;
+        tracer.body.velocity.x = Utilities.Speed2;
 
         caribou.body.x = (this.gridsize * 29) + 12;
         caribou.body.y = (this.gridsize * 28) + 12;
-        caribou.body.velocity.x = -Utilities.Speed;
+        caribou.body.velocity.x = -Utilities.Speed2;
         
         livesText.text = this.lives;
     },
@@ -493,7 +497,7 @@ Pacman.prototype = {
                     var xDiff = this.pacman.body.x - chaser.body.x;
                     var yDiff = this.pacman.body.y - chaser.body.y;
 
-                    if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) < Utilities.Prox || Math.abs(yDiff) < Utilities.Prox) {
                         if (Math.abs(xDiff) > Math.abs(yDiff)) {
                             if (xDiff > 0) {
                                 if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
@@ -564,29 +568,56 @@ Pacman.prototype = {
 
     chasermove: function (direction) {
         if (direction === Utilities.Up) {
-            chaser.body.velocity.y = -(Utilities.Speed);
+            chaser.body.velocity.y = -(Utilities.Speed2);
             chaser.body.velocity.x = 0;
             chaserComingFrom = Utilities.Down;
 
         }
         else if (direction === Utilities.Down) {
-            chaser.body.velocity.y = (Utilities.Speed);
+            chaser.body.velocity.y = (Utilities.Speed2);
             chaser.body.velocity.x = 0;
             chaserComingFrom = Utilities.Up;
         }
         else if (direction === Utilities.Left) {
-            chaser.body.velocity.x = -(Utilities.Speed);
+            chaser.body.velocity.x = -(Utilities.Speed2);
             chaser.body.velocity.y = 0;
             chaserComingFrom = Utilities.Right;
         }
         else if (direction === Utilities.Right) {
-            chaser.body.velocity.x = (Utilities.Speed);
+            chaser.body.velocity.x = (Utilities.Speed2);
             chaser.body.velocity.y = 0;
             chaserComingFrom = Utilities.Left;
         }
     },
 
+    chaserSpeedUp: function(){
 
+        var xDiff = this.pacman.body.x - chaser.body.x;
+        var yDiff = this.pacman.body.y - chaser.body.y;
+        if ((Math.abs(xDiff) < 125 && Math.abs(yDiff) < 125) || chaserReturn === true){
+
+            if (chaserComingFrom === Utilities.Down) {
+                chaser.body.velocity.y = -(Utilities.Speed3);
+                chaser.body.velocity.x = 0;
+
+            }
+            else if (chaserComingFrom === Utilities.Up) {
+                chaser.body.velocity.y = (Utilities.Speed3);
+                chaser.body.velocity.x = 0;
+            }
+            else if (chaserComingFrom === Utilities.Right) {
+                chaser.body.velocity.x = -(Utilities.Speed3);
+                chaser.body.velocity.y = 0;
+            }
+            else if (chaserComingFrom === Utilities.Left) {
+                chaser.body.velocity.x = (Utilities.Speed3);
+                chaser.body.velocity.y = 0;
+            }
+           
+
+        }
+
+    },
 
     chaserSetAndMove: function (decisionIndex, pushDirection) {
         chaser.body.x = Utilities.tileToPixels(decisionPoints[decisionIndex].x);
@@ -1300,6 +1331,8 @@ Pacman.prototype = {
         else {
             map.setCollision(5, false, mapLayer)
         }
+        
+        this.chaserSpeedUp();
 
         this.physics.arcade.overlap(this.pacman, racer, this.die, null, this);
         this.physics.arcade.overlap(this.pacman, chaser, this.die, null, this);
