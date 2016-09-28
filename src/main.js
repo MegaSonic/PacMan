@@ -39,6 +39,7 @@ var chaserComingFrom = Utilities.Left;
 var chasermarker = new Phaser.Point();
 var chaserReturn = false;
 
+
 //RACER VARS
 var racer;
 var racerdirections = [null, null, null, null, null];
