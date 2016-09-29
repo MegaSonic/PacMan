@@ -1657,9 +1657,9 @@ Pacman.prototype = {
 
     },
     
-    pause: function()  {        this.game.input.keyboard.removeKey(Phaser.Keyboard.X);    },
+    pause: function()  {        this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);    },
     resume: function () {
-        sprintButton = this.input.keyboard.addKey(Phaser.Keyboard.X);
+        sprintButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         sprintButton.onDown.add(this.sprint, this);
     },
 
