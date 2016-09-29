@@ -432,10 +432,10 @@ Pacman.prototype = {
             game.state.start('Game');
 
             
-            chaserReturn = true;
-            racerReturn = true;
-            tracerReturn = true;
-            caribouReturn = true;
+            topLeftAlarm = true;
+            topRightAlarm = true;
+            bottomRightAlarm = true;
+            bottomTopAlarm = true;
             
         }
         else {
@@ -1656,6 +1656,19 @@ Pacman.prototype = {
         }
 
     },
+
+    alarmFX: function () {
+
+        if (chaserReturn === true || racerReturn === true || tracerReturn === true || caribouReturn === true) {
+            redTint.revive();
+            fireSound.play();
+
+        }
+        else {
+            redTint.kill();
+        }
+
+    },
     
     pause: function()  {        this.game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR);    },
     resume: function () {
@@ -1751,6 +1764,8 @@ Pacman.prototype = {
         this.racerSpeedUp();
         this.tracerSpeedUp();
         this.caribouSpeedUp();
+
+        this.alarmFX();
 
         console.log(sprintCounter);
 
