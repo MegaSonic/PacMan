@@ -438,7 +438,7 @@ Pacman.prototype = {
         currentDots++;
         // console.log(currentDots);
 
-        text.text = '$' + dollarScore;
+        text.text = '£' + dollarScore;
 
         if (currentDots >= requiredDots) {
             text.setStyle({ font: "24px Arial", fill: "#00ff00", align: "center" });
