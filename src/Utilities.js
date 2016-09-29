@@ -10,7 +10,7 @@ var Utilities = {
     Speed: 160,
     Speed2: 50,
     Speed3: 200,
-    Prox: 500,
+    Prox: 200,
     arrayContains: function (array, object) {
         var i = array.length;
         while (i--) {

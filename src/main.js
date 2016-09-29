@@ -46,6 +46,7 @@ var chaserComingFrom = Utilities.Left;
 var chasermarker = new Phaser.Point();
 var chaserReturn = false;
 var chaserSpeed;
+var chaserState;
 
 
 //RACER VARS
@@ -63,6 +64,7 @@ var tracerComingFrom = Utilities.Left;
 var tracermarker = new Phaser.Point();
 var tracerReturn = false;
 var tracerSpeed;
+var tracerMad;
 
 //CARIBOU
 var caribou;
@@ -71,6 +73,7 @@ var caribouComingFrom = Utilities.Right;
 var cariboumarker = new Phaser.Point();
 var caribouReturn = false;
 var caribouSpeed;
+var cariboyMad;
 
 var decisionPoints = [new Phaser.Point(8 + 3, 1), new Phaser.Point(11 + 3, 1), new Phaser.Point(20 + 3, 1), new Phaser.Point(23 + 3, 1),
     new Phaser.Point(2 + 3, 4), new Phaser.Point(29 + 3, 4),
@@ -222,7 +225,7 @@ Pacman.prototype = {
         chaser.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         chaser.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
         chaser.body.velocity.x = Utilities.Speed2;
-
+        chaser.play('walkRightBored');
 
         // GUARD 2
         racer = this.add.sprite((this.gridsize * (29  + 3)) + 12, (this.gridsize * (4)) + 12, 'guard', 0);
@@ -239,6 +242,8 @@ Pacman.prototype = {
         racer.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         racer.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
         racer.body.velocity.x = -Utilities.Speed2;
+        racer.scale.x = -1;
+        racer.play('walkRightBored');
 
         // GUARD 3
         tracer = this.add.sprite((this.gridsize * (2  + 3)) + 12, (this.gridsize * (28)) + 12, 'guard', 0);
@@ -255,7 +260,7 @@ Pacman.prototype = {
         tracer.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         tracer.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
         tracer.body.velocity.x = Utilities.Speed2;
-
+        tracer.play('walkRightBored');
 
         // GUARD 4
         caribou = this.add.sprite((this.gridsize * (29  + 3)) + 12, (this.gridsize * (28)) + 12, 'guard', 0);
@@ -272,6 +277,8 @@ Pacman.prototype = {
         caribou.animations.add('walkUpShocked', [28, 29, 30, 31], 12, true);
         caribou.animations.add('walkRightShocked', [32, 33, 34, 35], 12, true);
         caribou.body.velocity.x = -Utilities.Speed2;
+        caribou.scale.x = -1;
+        caribou.play('walkRightBored');
 
         textGroup = game.add.group();
         textGroup.add(text);
@@ -427,18 +434,25 @@ Pacman.prototype = {
         chaser.body.x = (this.gridsize * (2 + 3)) + 12; 
         chaser.body.y = (this.gridsize * 10) + 12;
         chaser.body.velocity.x = Utilities.Speed2;
+        chaser.play('walkRightBored');
 
         racer.body.x = (this.gridsize * (29 + 3)) + 12;
         racer.body.y = (this.gridsize * 4) + 12;
         racer.body.velocity.x = -Utilities.Speed2;
+        racer.scale.x = -1;
+        racer.play('walkRightBored');
+        
 
         tracer.body.x = (this.gridsize * (2  + 3)) + 12;
         tracer.body.y = (this.gridsize * 28) + 12;
         tracer.body.velocity.x = Utilities.Speed2;
+        tracer.play('walkRightBored');
 
         caribou.body.x = (this.gridsize * (29 + 3)) + 12;
         caribou.body.y = (this.gridsize * 28) + 12;
         caribou.body.velocity.x = -Utilities.Speed2;
+        caribou.scale.x = -1;
+        caribou.play('walkRightBored');
         
         livesText.text = this.lives;
     },
@@ -502,6 +516,8 @@ Pacman.prototype = {
 
                 if (chaserReturn === true) {
 
+                    chaserState = 2;
+
                     var xDiff = Utilities.tileToPixels(home.x) - chaser.body.x;
                     var yDiff = Utilities.tileToPixels(home.y) - chaser.body.y;
 
@@ -548,13 +564,13 @@ Pacman.prototype = {
                 }
                 else {
 
-
                     var rand = Math.floor((Math.random() * 4) + 1)
 
                     var xDiff = this.pacman.body.x - chaser.body.x;
                     var yDiff = this.pacman.body.y - chaser.body.y;
 
-                    if (Math.abs(xDiff) < Utilities.Prox || Math.abs(yDiff) < Utilities.Prox) {
+                    if (Math.abs(xDiff) < Utilities.Prox && Math.abs(yDiff) < Utilities.Prox) {
+                        chaserState = 1;
                         if (Math.abs(xDiff) > Math.abs(yDiff)) {
                             if (xDiff > 0) {
                                 if (chaserdirections[3].index === this.safetile || chaserdirections[3].index === 8) {
@@ -593,6 +609,7 @@ Pacman.prototype = {
                         }
                     }
                     else {
+                        chaserState = 0;
                         for (var k = 0; k < 4;) {
                             if (rand % 4 !== chaserComingFrom) {
                                 if (chaserdirections[rand % 4].index === this.safetile || chaserdirections[rand % 4].index === 8) {
@@ -624,26 +641,66 @@ Pacman.prototype = {
 
 
     chasermove: function (direction) {
+        chaser.scale.x = 1;
         if (direction === Utilities.Up) {
             chaser.body.velocity.y = -(Utilities.Speed2);
             chaser.body.velocity.x = 0;
             chaserComingFrom = Utilities.Down;
+            if(chaserState === 2){
+                chaser.play('walkUpShocked');
+            }
+            else if (chaserState === 1){
+                chaser.play('walkUpAngry');
+            }
+            else{
+                chaser.play('walkUpBored');
+            }
 
         }
         else if (direction === Utilities.Down) {
             chaser.body.velocity.y = (Utilities.Speed2);
             chaser.body.velocity.x = 0;
             chaserComingFrom = Utilities.Up;
+            if (chaserState === 2) {
+                chaser.play('walkDownShocked');
+            }
+            else if (chaserState === 1) {
+                chaser.play('walkDownAngry');
+            }
+            else {
+                chaser.play('walkDownBored');
+            }
         }
         else if (direction === Utilities.Left) {
             chaser.body.velocity.x = -(Utilities.Speed2);
             chaser.body.velocity.y = 0;
             chaserComingFrom = Utilities.Right;
+            if (chaserState ===2) {
+                chaser.scale.x = -1;
+                chaser.play('walkRightShocked');
+            }
+            else if (chaserState === 1) {
+                chaser.scale.x = -1;
+                chaser.play('walkRightAngry');
+            }
+            else {
+                chaser.scale.x = -1;
+                chaser.play('walkRightBored');
+            }
         }
         else if (direction === Utilities.Right) {
             chaser.body.velocity.x = (Utilities.Speed2);
             chaser.body.velocity.y = 0;
             chaserComingFrom = Utilities.Left;
+            if (chaserState === 2) {
+                chaser.play('walkRightShocked');
+            }
+            else if (chaserState === 1) {
+                chaser.play('walkRightAngry');
+            }
+            else {
+                chaser.play('walkRightBored');
+            }
         }
     },
 
@@ -719,6 +776,8 @@ Pacman.prototype = {
 
                 if (racerReturn === true) {
 
+                    racerState = 2;
+
                     var xDiff = Utilities.tileToPixels(home.x) - racer.body.x;
                     var yDiff = Utilities.tileToPixels(home.y) - racer.body.y;
 
@@ -765,13 +824,13 @@ Pacman.prototype = {
                 }
                 else {
 
-
                     var rand = Math.floor((Math.random() * 4) + 1)
 
                     var xDiff = this.pacman.body.x - racer.body.x;
                     var yDiff = this.pacman.body.y - racer.body.y;
 
-                    if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) < Utilities.Prox && Math.abs(yDiff) < Utilities.Prox) {
+                        racerState = 1;
                         if (Math.abs(xDiff) > Math.abs(yDiff)) {
                             if (xDiff > 0) {
                                 if (racerdirections[3].index === this.safetile || racerdirections[3].index === 8) {
@@ -810,6 +869,7 @@ Pacman.prototype = {
                         }
                     }
                     else {
+                        racerState = 0;
                         for (var k = 0; k < 4;) {
                             if (rand % 4 !== racerComingFrom) {
                                 if (racerdirections[rand % 4].index === this.safetile || racerdirections[rand % 4].index === 8) {
@@ -840,26 +900,66 @@ Pacman.prototype = {
     },
 
     racermove: function (direction) {
+        racer.scale.x = 1;
         if (direction === Utilities.Up) {
             racer.body.velocity.y = -(Utilities.Speed2);
             racer.body.velocity.x = 0;
             racerComingFrom = Utilities.Down;
+            if (racerState === 2) {
+                racer.play('walkUpShocked');
+            }
+            else if (racerState === 1) {
+                racer.play('walkUpAngry');
+            }
+            else {
+                racer.play('walkUpBored');
+            }
 
         }
         else if (direction === Utilities.Down) {
             racer.body.velocity.y = (Utilities.Speed2);
             racer.body.velocity.x = 0;
             racerComingFrom = Utilities.Up;
+            if (racerState === 2) {
+                racer.play('walkDownShocked');
+            }
+            else if (racerState === 1) {
+                racer.play('walkDownAngry');
+            }
+            else {
+                racer.play('walkDownBored');
+            }
         }
         else if (direction === Utilities.Left) {
             racer.body.velocity.x = -(Utilities.Speed2);
             racer.body.velocity.y = 0;
             racerComingFrom = Utilities.Right;
+            if (racerState === 2) {
+                racer.scale.x = -1;
+                racer.play('walkRightShocked');
+            }
+            else if (racerState === 1) {
+                racer.scale.x = -1;
+                racer.play('walkRightAngry');
+            }
+            else {
+                racer.scale.x = -1;
+                racer.play('walkRightBored');
+            }
         }
         else if (direction === Utilities.Right) {
             racer.body.velocity.x = (Utilities.Speed2);
             racer.body.velocity.y = 0;
             racerComingFrom = Utilities.Left;
+            if (racerState === 2) {
+                racer.play('walkRightShocked');
+            }
+            else if (racerState === 1) {
+                racer.play('walkRightAngry');
+            }
+            else {
+                racer.play('walkRightBored');
+            }
         }
     },
 
@@ -957,6 +1057,8 @@ Pacman.prototype = {
 
                 if (tracerReturn === true) {
 
+                    tracerState = 2;
+
                     var xDiff = Utilities.tileToPixels(home.x) - tracer.body.x;
                     var yDiff = Utilities.tileToPixels(home.y) - tracer.body.y;
 
@@ -1003,13 +1105,13 @@ Pacman.prototype = {
                 }
                 else {
 
-
                     var rand = Math.floor((Math.random() * 4) + 1)
 
                     var xDiff = this.pacman.body.x - tracer.body.x;
                     var yDiff = this.pacman.body.y - tracer.body.y;
 
-                    if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) < Utilities.Prox && Math.abs(yDiff) < Utilities.Prox) {
+                        tracerState = 1;
                         if (Math.abs(xDiff) > Math.abs(yDiff)) {
                             if (xDiff > 0) {
                                 if (tracerdirections[3].index === this.safetile || tracerdirections[3].index === 8) {
@@ -1048,6 +1150,7 @@ Pacman.prototype = {
                         }
                     }
                     else {
+                        tracerState = 0;
                         for (var k = 0; k < 4;) {
                             if (rand % 4 !== tracerComingFrom) {
                                 if (tracerdirections[rand % 4].index === this.safetile || tracerdirections[rand % 4].index === 8) {
@@ -1078,26 +1181,66 @@ Pacman.prototype = {
     },
 
     tracermove: function (direction) {
+        tracer.scale.x = 1;
         if (direction === Utilities.Up) {
             tracer.body.velocity.y = -(Utilities.Speed2);
             tracer.body.velocity.x = 0;
             tracerComingFrom = Utilities.Down;
+            if (tracerState === 2) {
+                tracer.play('walkUpShocked');
+            }
+            else if (tracerState === 1) {
+                tracer.play('walkUpAngry');
+            }
+            else {
+                tracer.play('walkUpBored');
+            }
 
         }
         else if (direction === Utilities.Down) {
             tracer.body.velocity.y = (Utilities.Speed2);
             tracer.body.velocity.x = 0;
             tracerComingFrom = Utilities.Up;
+            if (tracerState === 2) {
+                tracer.play('walkDownShocked');
+            }
+            else if (tracerState === 1) {
+                tracer.play('walkDownAngry');
+            }
+            else {
+                tracer.play('walkDownBored');
+            }
         }
         else if (direction === Utilities.Left) {
             tracer.body.velocity.x = -(Utilities.Speed2);
             tracer.body.velocity.y = 0;
             tracerComingFrom = Utilities.Right;
+            if (tracerState === 2) {
+                tracer.scale.x = -1;
+                tracer.play('walkRightShocked');
+            }
+            else if (tracerState === 1) {
+                tracer.scale.x = -1;
+                tracer.play('walkRightAngry');
+            }
+            else {
+                tracer.scale.x = -1;
+                tracer.play('walkRightBored');
+            }
         }
         else if (direction === Utilities.Right) {
             tracer.body.velocity.x = (Utilities.Speed2);
             tracer.body.velocity.y = 0;
             tracerComingFrom = Utilities.Left;
+            if (tracerState === 2) {
+                tracer.play('walkRightShocked');
+            }
+            else if (tracerState === 1) {
+                tracer.play('walkRightAngry');
+            }
+            else {
+                tracer.play('walkRightBored');
+            }
         }
     },
 
@@ -1175,6 +1318,8 @@ Pacman.prototype = {
 
                 if (caribouReturn === true) {
 
+                    caribouState = 2;
+
                     var xDiff = Utilities.tileToPixels(home.x) - caribou.body.x;
                     var yDiff = Utilities.tileToPixels(home.y) - caribou.body.y;
 
@@ -1221,13 +1366,13 @@ Pacman.prototype = {
                 }
                 else {
 
-
                     var rand = Math.floor((Math.random() * 4) + 1)
 
                     var xDiff = this.pacman.body.x - caribou.body.x;
                     var yDiff = this.pacman.body.y - caribou.body.y;
 
-                    if (Math.abs(xDiff) < 125 || Math.abs(yDiff) < 125) {
+                    if (Math.abs(xDiff) < Utilities.Prox && Math.abs(yDiff) < Utilities.Prox) {
+                        caribouState = 1;
                         if (Math.abs(xDiff) > Math.abs(yDiff)) {
                             if (xDiff > 0) {
                                 if (cariboudirections[3].index === this.safetile || cariboudirections[3].index === 8) {
@@ -1266,6 +1411,7 @@ Pacman.prototype = {
                         }
                     }
                     else {
+                        caribouState = 0;
                         for (var k = 0; k < 4;) {
                             if (rand % 4 !== caribouComingFrom) {
                                 if (cariboudirections[rand % 4].index === this.safetile || cariboudirections[rand % 4].index === 8) {
@@ -1296,26 +1442,66 @@ Pacman.prototype = {
     },
 
     cariboumove: function (direction) {
+        caribou.scale.x = 1;
         if (direction === Utilities.Up) {
             caribou.body.velocity.y = -(Utilities.Speed2);
             caribou.body.velocity.x = 0;
             caribouComingFrom = Utilities.Down;
+            if (caribouState === 2) {
+                caribou.play('walkUpShocked');
+            }
+            else if (caribouState === 1) {
+                caribou.play('walkUpAngry');
+            }
+            else {
+                caribou.play('walkUpBored');
+            }
 
         }
         else if (direction === Utilities.Down) {
             caribou.body.velocity.y = (Utilities.Speed2);
             caribou.body.velocity.x = 0;
             caribouComingFrom = Utilities.Up;
+            if (caribouState === 2) {
+                caribou.play('walkDownShocked');
+            }
+            else if (caribouState === 1) {
+                caribou.play('walkDownAngry');
+            }
+            else {
+                caribou.play('walkDownBored');
+            }
         }
         else if (direction === Utilities.Left) {
             caribou.body.velocity.x = -(Utilities.Speed2);
             caribou.body.velocity.y = 0;
             caribouComingFrom = Utilities.Right;
+            if (caribouState === 2) {
+                caribou.scale.x = -1;
+                caribou.play('walkRightShocked');
+            }
+            else if (caribouState === 1) {
+                caribou.scale.x = -1;
+                caribou.play('walkRightAngry');
+            }
+            else {
+                caribou.scale.x = -1;
+                caribou.play('walkRightBored');
+            }
         }
         else if (direction === Utilities.Right) {
             caribou.body.velocity.x = (Utilities.Speed2);
             caribou.body.velocity.y = 0;
             caribouComingFrom = Utilities.Left;
+            if (caribouState === 2) {
+                caribou.play('walkRightShocked');
+            }
+            else if (caribouState === 1) {
+                caribou.play('walkRightAngry');
+            }
+            else {
+                caribou.play('walkRightBored');
+            }
         }
     },
 
