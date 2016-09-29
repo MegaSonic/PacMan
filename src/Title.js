@@ -23,6 +23,8 @@ var titleState = {
 		game.load.spritesheet('titleImage', 'assets/Title_screen_sprites_100ms.png', 928, 816);
 		game.load.spritesheet('gameOverImage', 'assets/Gameover_sprites_30ms.png', 928, 816);
 
+		game.load.audio('fire', 'assets/fire.WAV');
+
 		//titleText = game.add.text(0, 0, "Underground", { font: "36px Arial", fill: "#ff0044", align: "center" });
         //startText = game.add.text(0, 500, "Start", { font: "24px Arial", fill: "#ff0044", align: "center" });
 	},

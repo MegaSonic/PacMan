@@ -38,6 +38,7 @@ var rightRails;
 
 var redTint;
 
+var fireSound;
 
 //CHASER VARS
 var chaser;
@@ -191,6 +192,7 @@ Pacman.prototype = {
 
 
 
+
         leftRails = game.add.sprite(-5, 0, 'rails', 0);
         rightRails = game.add.sprite(840, 0, 'rails', 0);
 
@@ -283,6 +285,8 @@ Pacman.prototype = {
 
         redTint = this.add.sprite(0, 0, 'redTint', 0);
         redTint.kill();
+
+        fireSound = game.add.audio('fire');
     },
 
     checkKeys: function () {
