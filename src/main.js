@@ -112,16 +112,7 @@ var Pacman = function (game) {
 
 Pacman.prototype = {
 
-    init: function () {
-        //this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.scale.pageAlignHorizontally = true;
-        this.scale.pageAlignVertically = true;
-        //Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
-        Phaser.Canvas.setSmoothingEnabled(this.game.canvas, false);
-        this.physics.startSystem(Phaser.Physics.ARCADE);
-
-
-    },
+    
 
 
 
