@@ -194,8 +194,8 @@ Pacman.prototype = {
 
 
 
-        leftRails = game.add.sprite(-30, 0, 'rails', 0);
-        rightRails = game.add.sprite(900, 0, 'rails', 0);
+        leftRails = game.add.sprite(-5, 0, 'rails', 0);
+        rightRails = game.add.sprite(848, 0, 'rails', 0);
 
         // dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         // dieButton.onDown.add(this.die, this);
