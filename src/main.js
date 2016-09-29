@@ -154,9 +154,6 @@ Pacman.prototype = {
 
     create: function () {
 
-        text = game.add.text(0, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
-        livesText = game.add.text(game.world.width - 100, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
-
 
 
         this.stage.backgroundColor = '#000000';
@@ -176,7 +173,7 @@ Pacman.prototype = {
         this.spray = this.add.physicsGroup();
         map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
 
-        map.setCollisionByExclusion([this.safetile, 21, 4, 24, 28], true, mapLayer);
+        map.setCollisionByExclusion([this.safetile, 21, 4, 24, 28, 32], true, mapLayer);
         map.setCollision(5,true,mapLayer)
 
         console.log("After collision by exclusion");
@@ -282,8 +279,8 @@ Pacman.prototype = {
         caribou.scale.x = -1;
         caribou.play('walkRightBored');
 
-        textGroup = game.add.group();
-        textGroup.add(text);
+
+        
 
 
         if (playerGender == PlayerState.MALE) {
@@ -293,6 +290,7 @@ Pacman.prototype = {
             this.pacman.loadTexture('playerf', 0);
         }
 
+        this.pacman.play('walkRight');
 
         StartExit();
 
@@ -300,6 +298,13 @@ Pacman.prototype = {
         redTint.kill();
 
         fireSound = game.add.audio('fire');
+
+        text = game.add.text(100, 0, score, { font: "24px Arial", fill: "#ff0044", align: "center" });
+        livesText = game.add.text(800, 0, this.lives, { font: "24px Arial", fill: "#ff0044", align: "center" });
+
+
+        textGroup = game.add.group();
+        textGroup.add(text);
     },
 
     checkKeys: function () {
@@ -413,6 +418,10 @@ Pacman.prototype = {
         console.log(currentDots);
 
         text.text = '$' + dollarScore;
+
+        if (currentDots > requiredDots) {
+            text.setStyle({ font: "24px Arial", fill: "#00ff00", align: "center" });
+        }
     },
 
     die: function () {

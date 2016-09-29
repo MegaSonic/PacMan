@@ -38,6 +38,7 @@ function StartExit() {
 	seTrain = game.add.sprite(rightRails.x, rightRails.y + 575, 'train', 0);
 
 
+
 	nwTrain.kill();
 	swTrain.kill();
 	neTrain.kill();
@@ -72,6 +73,11 @@ function StartExit() {
 	console.log("added animations?");
 
 	exitTimer = exitTime;
+
+	nwExit.kill();
+	swExit.kill();
+	neExit.kill();
+	seExit.kill();
 }
 
 function CheckAllDoors() {
