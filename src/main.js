@@ -1,5 +1,5 @@
 
-var game = new Phaser.Game(1000, 1000, Phaser.AUTO);
+var game = new Phaser.Game(928, 816, Phaser.AUTO);
 
 var map, mapLayer, secondLayer;
 
@@ -35,6 +35,8 @@ var playerGender = PlayerState.MALE;
 
 var leftRails;
 var rightRails;
+
+var redTint;
 
 
 //CHASER VARS
@@ -112,16 +114,7 @@ var Pacman = function (game) {
 
 Pacman.prototype = {
 
-    init: function () {
-        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        this.scale.pageAlignHorizontally = true;
-        this.scale.pageAlignVertically = true;
-        //Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
-        Phaser.Canvas.setSmoothingEnabled(this.game.canvas, false);
-        this.physics.startSystem(Phaser.Physics.ARCADE);
-
-
-    },
+    
 
 
 
@@ -150,6 +143,7 @@ Pacman.prototype = {
         game.load.image('rails', 'assets/Rails.png');
         game.load.image('train', 'assets/Train_front.png');
         game.load.spritesheet('guard', 'assets/police.png', 40, 40);
+        game.load.image('redTint', 'assets/redTint.png');
     },
 
     
@@ -284,8 +278,11 @@ Pacman.prototype = {
 
 
 
+
         StartExit();
 
+        redTint = this.add.sprite(0, 0, 'redTint', 0);
+        redTint.kill();
     },
 
     checkKeys: function () {
