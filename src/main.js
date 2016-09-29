@@ -228,7 +228,7 @@ Pacman.prototype = {
         house = this.add.sprite((this.gridsize * (12  + 3)), (this.gridsize * (14)), 'house', 0);
 
         // GUARD 1
-        chaser = this.add.sprite((this.gridsize * (2  + 3)) + 12, (this.gridsize * (10)) + 12, 'guard', 0);
+        chaser = this.add.sprite((this.gridsize * 14) + 12, (this.gridsize * 13) + 12, 'guard', 0);
         chaser.anchor.set(0.5);
         this.game.physics.enable(chaser, Phaser.Physics.ARCADE);
         chaser.body.setSize(24, 24, 0, 0);
@@ -463,6 +463,7 @@ Pacman.prototype = {
             game.state.start('Game');
 
 
+
             
             topLeftAlarm = true;
             topRightAlarm = true;
@@ -524,6 +525,10 @@ Pacman.prototype = {
         caribou.scale.x = -1;
         caribou.play('walkRightBored');
 
+        chaserReturn = false;
+        racerReturn = false;
+        tracerReturn = false;
+        caribouReturn = false;
         
         sprintCounter = 0;
         this.speed = 120;
