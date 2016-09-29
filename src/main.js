@@ -20,6 +20,8 @@ var poweredUp = false;
 var home = new Phaser.Point(16 + 3, 16)
 var levelWin = false;
 var stage = 1;
+var sprintButton;
+var sprintCounter;
 
 var requiredDots = 100;
 var currentDots = 0;
@@ -203,6 +205,9 @@ Pacman.prototype = {
         changeButton = this.input.keyboard.addKey(Phaser.Keyboard.Z);
         changeButton.onDown.add(this.changePlayer, this);
 
+        sprintButton = this.input.keyboard.addKey(Phaser.Keyboard.X);
+        sprintButton.onDown.add(this.sprint, this);
+
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
 
@@ -374,7 +379,12 @@ Pacman.prototype = {
         this.current = direction;
     },
 
+    sprint: function () {
 
+        this.speed = 190;
+        sprintCounter = 1000;
+
+    },
 
     eatDot: function (pacman, dot) {
         dot.kill();
@@ -1391,7 +1401,9 @@ Pacman.prototype = {
         caribouReturn = true;
 
     },
-
+    
+    pause: function()  {        this.game.input.keyboard.removeKey(Phaser.Keyboard.X);    },
+    resume: function() {        this.game.input.keyboard.addKey(Phaser.Keyboard.X);},
 
     update: function () {
 
@@ -1429,8 +1441,17 @@ Pacman.prototype = {
             this.turn();
         }
 
-
-
+        if (sprintCounter < 500 && sprintCounter > 0) {
+            this.speed = 120
+            sprintCounter--;
+        }
+        else if(sprintCounter > 0){
+            this.pause();
+            sprintCounter--;
+        }
+        else {
+            this.resume();
+        }
 
         if (counter === 0) {
             this.ghostAI();
@@ -1472,6 +1493,8 @@ Pacman.prototype = {
         this.racerSpeedUp();
         this.tracerSpeedUp();
         this.caribouSpeedUp();
+
+        console.log(sprintCounter);
 
         this.physics.arcade.overlap(this.pacman, racer, this.die, null, this);
         this.physics.arcade.overlap(this.pacman, chaser, this.die, null, this);
