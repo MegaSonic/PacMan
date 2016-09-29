@@ -450,7 +450,15 @@ Pacman.prototype = {
         if (levelWin === true) {
             levelWin = false;
             stage++;
+            if (requiredDots < 200) {
+                requiredDots += 25;
+                score = 0;
+            }
+            fireSound.stop();
+            redTint.kill();
+
             game.state.start('Game');
+
 
             
             topLeftAlarm = true;
@@ -472,7 +480,10 @@ Pacman.prototype = {
                 this.lives = 3;
                 currentDots = 0;
                 score = 0;
+                requiredDots = 100;
                 musicLoop.stop();
+                fireSound.stop();
+                redTint.kill();
                 game.state.start('GameOver');
                 //game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
                 // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
