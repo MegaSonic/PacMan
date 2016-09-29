@@ -26,12 +26,18 @@ var titleState = {
 		game.load.spritesheet('gameOverImage', 'assets/Gameover_sprites_30ms.png', 928, 816);
 
 		game.load.audio('fire', 'assets/fire.WAV');
+		game.load.audio('musicLoop', 'assets/Soundtrack_Loop.mp3');
+		game.load.audio('start', 'assets/Starting_Sound.wav');
+		game.load.audio('gameOver', 'assets/Game_Over.wav');
 
 		//titleText = game.add.text(0, 0, "Underground", { font: "36px Arial", fill: "#ff0044", align: "center" });
         //startText = game.add.text(0, 500, "Start", { font: "24px Arial", fill: "#ff0044", align: "center" });
 	},
 
 	create: function () {
+		startingSound = game.add.audio('start');
+		gameOverSound = game.add.audio('gameOver');
+
 		titleImage = game.add.sprite(0, 0, 'titleImage', 0);
 		titleImage.animations.add('play', [0, 1, 2, 3], 10, true);
 		game.stage.backgroundColor = '#000000';
@@ -42,6 +48,9 @@ var titleState = {
         leftButton.onDown.add(this.startGameMale, this);
         rightButton.onDown.add(this.startGameFemale, this);
         titleImage.play('play');
+        startingSound.play();
+
+
 	},
 
 	startGame: function() {

@@ -43,6 +43,9 @@ var rightRails;
 var redTint;
 
 var fireSound;
+var startingSound;
+var gameOverSound;
+var musicLoop;
 
 //CHASER VARS
 var chaser;
@@ -332,7 +335,7 @@ Pacman.prototype = {
         // NOTE: The Index != safetile part is making it so that pacman can't turn when on white tiles.
         // Change this line to give more options for safe tiles, or might have to redo parts of tilemap.
         if (this.turning === turnTo || this.directions[turnTo] === null || this.directions[turnTo].index !== this.safetile) {
-            if (!(this.directions[turnTo].index == 8 || this.directions[turnTo].index == 4 || this.directions[turnTo].index == 5)) {
+            if (!(this.directions[turnTo].index == 8 || this.directions[turnTo].index == 4 || this.directions[turnTo].index == 5 || this.directions[turnTo].index == 32)) {
                 //  Invalid direction if they're already set to turn that way
                 //  Or there is no tile there, or the tile isn't index 1 (a floor tile)
                 return;

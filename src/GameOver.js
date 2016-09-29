@@ -21,6 +21,7 @@ var gameOverState = {
         gameOverButton.onDown.add(this.resetGame, this);
 
         gameOverImage.play('play');
+        gameOverSound.play();
 	},
 
 	resetGame: function() {
