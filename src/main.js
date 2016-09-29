@@ -502,8 +502,8 @@ Pacman.prototype = {
         this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
         this.move(Phaser.RIGHT);
 
-        chaser.body.x = (this.gridsize * (2 + 3)) + 12; 
-        chaser.body.y = (this.gridsize * 10) + 12;
+        chaser.body.x = (this.gridsize * 14) + 12; 
+        chaser.body.y = (this.gridsize * 13) + 12;
         chaser.body.velocity.x = Utilities.Speed2;
         chaser.play('walkRightBored');
 
