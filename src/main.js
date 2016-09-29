@@ -22,6 +22,10 @@ var levelWin = false;
 var stage = 1;
 var sprintButton;
 var sprintCounter;
+var topRightAlarm
+var topLeftAlarm;
+var bottomLeftAlarm;
+var bottomRightAlarm;
 
 var requiredDots = 100;
 var currentDots = 0;
@@ -188,6 +192,10 @@ Pacman.prototype = {
         this.cursors = this.input.keyboard.createCursorKeys();
 
 
+        topLeftAlarm = true;
+        topRightAlarm = true;
+        bottomLeftAlarm = true;
+        bottomRightAlarm = true;
 
 
         leftRails = game.add.sprite(-5, 0, 'rails', 0);
@@ -427,6 +435,13 @@ Pacman.prototype = {
             levelWin = false;
             stage++;
             game.state.start('Game');
+
+            
+            chaserReturn = true;
+            racerReturn = true;
+            tracerReturn = true;
+            caribouReturn = true;
+            
         }
         else {
             this.lives--;
@@ -469,7 +484,10 @@ Pacman.prototype = {
         caribou.body.velocity.x = -Utilities.Speed2;
         caribou.scale.x = -1;
         caribou.play('walkRightBored');
+
         
+        sprintCounter = 0;
+
         livesText.text = this.lives;
     },
 
@@ -1593,13 +1611,54 @@ Pacman.prototype = {
         }
     },
 
-    powerPellet: function(){
-        powerCounter = 1000
-        poweredUp = true;
-        chaserReturn = true;
-        racerReturn = true;
-        tracerReturn = true;
-        caribouReturn = true;
+    powerPellet: function () {
+        if (this.pacman.x == 8 * 24 + 12 && this.pacman.y == 4 * 24 + 12) {
+            console.log("topLeftAlarm")
+            powerCounter = 1000
+            if (topLeftAlarm === true) {
+                chaserReturn = true;
+                racerReturn = true;
+                tracerReturn = true;
+                caribouReturn = true;
+            }
+            topLeftAlarm = false;
+        }
+
+        if (this.pacman.x == 29 * 24 + 12 && this.pacman.y == 4 * 24 + 12) {
+            console.log("topRightAlarm")
+            powerCounter = 1000
+            if (topRightAlarm === true) {
+                chaserReturn = true;
+                racerReturn = true;
+                tracerReturn = true;
+                caribouReturn = true;
+            }
+            topRightAlarm = false;
+        }
+
+        if (this.pacman.x == 10 * 24 + 12 && this.pacman.y == 28 * 24 + 12) {
+            console.log("bottomLeftAlarm")
+            powerCounter = 1000
+            if (bottomLeftAlarm === true) {
+                chaserReturn = true;
+                racerReturn = true;
+                tracerReturn = true;
+                caribouReturn = true;
+            }
+            bottomLeftAlarm = false;
+        }
+
+        if (this.pacman.x == 28 * 24 + 12 && this.pacman.y == 28 * 24 + 12) {
+            console.log("bottomRightAlarm")
+            powerCounter = 1000
+            if (bottomRightAlarm === true) {
+                chaserReturn = true;
+                racerReturn = true;
+                tracerReturn = true;
+                caribouReturn = true;
+            }
+            bottomRightAlarm = false;
+        }
 
     },
     
@@ -1621,12 +1680,12 @@ Pacman.prototype = {
 
         this.checkStairsCollision();
 
-        if (this.physics.arcade.overlap(this.pacman, this.spray)) {
-            this.powerPellet();
-        }
-        else {
-            powerCounter--;
-        }
+        
+        this.powerPellet();
+        
+        
+        powerCounter--;
+       
 
 
         UpdateExit();
