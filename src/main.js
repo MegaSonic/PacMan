@@ -450,13 +450,16 @@ Pacman.prototype = {
         if (levelWin === true) {
             levelWin = false;
             stage++;
-            if (requiredDots < 200) {
+            if (requiredDots < 175) {
                 requiredDots += 25;
-                score = 0;
+                
             }
             fireSound.stop();
             redTint.kill();
-
+            currentDots = 0;
+            score = 0;
+            text.setStyle({ font: "24px Arial", fill: "#ff0000", align: "center" });
+            
             game.state.start('Game');
 
 
@@ -475,6 +478,8 @@ Pacman.prototype = {
         }
         else {
             this.lives--;
+            fireSound.stop();
+            redTint.kill();
 
             if (this.lives < 1) {
                 this.lives = 3;
