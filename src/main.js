@@ -378,8 +378,10 @@ Pacman.prototype = {
 
     sprint: function () {
 
-        this.speed = 190;
-        sprintCounter = 1000;
+        this.pacman.body.velocity.x = this.pacman.body.velocity.x * 1.5;
+        this.pacman.body.velocity.y = this.pacman.body.velocity.y * 1.5;
+        this.speed = 180;
+        sprintCounter = 600;
 
     },
 
@@ -1400,7 +1402,10 @@ Pacman.prototype = {
     },
     
     pause: function()  {        this.game.input.keyboard.removeKey(Phaser.Keyboard.X);    },
-    resume: function() {        this.game.input.keyboard.addKey(Phaser.Keyboard.X);},
+    resume: function () {
+        sprintButton = this.input.keyboard.addKey(Phaser.Keyboard.X);
+        sprintButton.onDown.add(this.sprint, this);
+    },
 
     update: function () {
 
@@ -1438,7 +1443,7 @@ Pacman.prototype = {
             this.turn();
         }
 
-        if (sprintCounter < 500 && sprintCounter > 0) {
+        if (sprintCounter < 300 && sprintCounter > 0) {
             this.speed = 120
             sprintCounter--;
         }
