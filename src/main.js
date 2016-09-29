@@ -17,15 +17,15 @@ var counter3 = 0;
 var counter4 = 0;
 var powerCounter = 0;
 var poweredUp = false;
-var home = new Phaser.Point(16, 16)
+var home = new Phaser.Point(16 + 3, 16)
 var levelWin = false;
 var stage = 1;
 
 var requiredDots = 100;
 var currentDots = 0;
 
-var leftStairs = new Phaser.Point(1, 16);
-var rightStairs = new Phaser.Point(30, 16);
+var leftStairs = new Phaser.Point(1 + 3, 16);
+var rightStairs = new Phaser.Point(30 + 3, 16);
 var house;
 
 var PlayerState = { MALE: false, FEMALE: true };
@@ -68,16 +68,16 @@ var cariboumarker = new Phaser.Point();
 var caribouReturn = false;
 var caribouSpeed;
 
-var decisionPoints = [new Phaser.Point(8, 1), new Phaser.Point(11, 1), new Phaser.Point(20, 1), new Phaser.Point(23, 1),
-    new Phaser.Point(2, 4), new Phaser.Point(29, 4),
-    new Phaser.Point(8, 7), new Phaser.Point(11, 7), new Phaser.Point(14, 7), new Phaser.Point(17, 7), new Phaser.Point(20, 7), new Phaser.Point(23, 7),
-    new Phaser.Point(8, 10), new Phaser.Point(23, 10),
-    new Phaser.Point(14, 13), new Phaser.Point(17, 13),
-    new Phaser.Point(11, 19), new Phaser.Point(20, 19),
-    new Phaser.Point(8, 22), new Phaser.Point(11, 22), new Phaser.Point(20, 22), new Phaser.Point(23, 22),
-    new Phaser.Point(2, 25), new Phaser.Point(8, 25), new Phaser.Point(11, 25), new Phaser.Point(14, 25), new Phaser.Point(17, 25), new Phaser.Point(20, 25), new Phaser.Point(23, 25), new Phaser.Point(29, 25),
-    new Phaser.Point(2, 28), new Phaser.Point(7, 28), new Phaser.Point(11, 28), new Phaser.Point(14, 28), new Phaser.Point(17, 28), new Phaser.Point(20, 28), new Phaser.Point(25, 28), new Phaser.Point(29, 28),
-	new Phaser.Point(7, 32), new Phaser.Point(11, 32), new Phaser.Point(14, 32), new Phaser.Point(17, 32), new Phaser.Point(20, 32), new Phaser.Point(25, 32) ];
+var decisionPoints = [new Phaser.Point(8 + 3, 1), new Phaser.Point(11 + 3, 1), new Phaser.Point(20 + 3, 1), new Phaser.Point(23 + 3, 1),
+    new Phaser.Point(2 + 3, 4), new Phaser.Point(29 + 3, 4),
+    new Phaser.Point(8 + 3, 7), new Phaser.Point(11 + 3, 7), new Phaser.Point(14 + 3, 7), new Phaser.Point(17 + 3, 7), new Phaser.Point(20 + 3, 7), new Phaser.Point(23 + 3, 7),
+    new Phaser.Point(8 + 3, 10), new Phaser.Point(23 + 3, 10),
+    new Phaser.Point(14 + 3, 13), new Phaser.Point(17 + 3, 13),
+    new Phaser.Point(11 + 3, 19), new Phaser.Point(20 + 3, 19),
+    new Phaser.Point(8 + 3, 22), new Phaser.Point(11 + 3, 22), new Phaser.Point(20 + 3, 22), new Phaser.Point(23 + 3, 22),
+    new Phaser.Point(2 + 3, 25), new Phaser.Point(8 + 3, 25), new Phaser.Point(11 + 3, 25), new Phaser.Point(14 + 3, 25), new Phaser.Point(17 + 3, 25), new Phaser.Point(20 + 3, 25), new Phaser.Point(23 + 3, 25), new Phaser.Point(29 + 3, 25),
+    new Phaser.Point(2 + 3, 28), new Phaser.Point(7 + 3, 28), new Phaser.Point(11 + 3, 28), new Phaser.Point(14 + 3, 28), new Phaser.Point(17 + 3, 28), new Phaser.Point(20 + 3, 28), new Phaser.Point(25 + 3, 28), new Phaser.Point(29 + 3, 28),
+	new Phaser.Point(7 + 3, 32), new Phaser.Point(11 + 3, 32), new Phaser.Point(14 + 3, 32), new Phaser.Point(17 + 3, 32), new Phaser.Point(20 + 3, 32), new Phaser.Point(25 + 3, 32) ];
 
 var Pacman = function (game) {
 
@@ -146,6 +146,7 @@ Pacman.prototype = {
         game.load.image('chaser', 'assets/chaser.png');
         game.load.image('house', 'assets/Guard_station.png');
         game.load.image('rails', 'assets/Rails.png');
+        game.load.image('train', 'assets/Train_front.png');
         game.load.spritesheet('guard', 'assets/police.png', 40, 40);
     },
 
@@ -179,7 +180,7 @@ Pacman.prototype = {
         map.setCollision(5,true,mapLayer)
 
         console.log("After collision by exclusion");
-        this.pacman = this.add.sprite((3 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
+        this.pacman = this.add.sprite((6 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
         this.pacman.animations.add('walkDown', [0, 1, 2, 3], 12, true);
@@ -195,7 +196,7 @@ Pacman.prototype = {
 
 
         leftRails = game.add.sprite(-5, 0, 'rails', 0);
-        rightRails = game.add.sprite(848, 0, 'rails', 0);
+        rightRails = game.add.sprite(840, 0, 'rails', 0);
 
         // dieButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         // dieButton.onDown.add(this.die, this);
@@ -205,10 +206,10 @@ Pacman.prototype = {
         this.pacman.play('walkRight');
         this.move(Phaser.RIGHT);
 
-        house = this.add.sprite((this.gridsize * 12), (this.gridsize * 14), 'house', 0);
+        house = this.add.sprite((this.gridsize * (12  + 3)), (this.gridsize * (14)), 'house', 0);
 
         // GUARD 1
-        chaser = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 10) + 12, 'guard', 0);
+        chaser = this.add.sprite((this.gridsize * (2  + 3)) + 12, (this.gridsize * (10)) + 12, 'guard', 0);
         chaser.anchor.set(0.5);
         this.game.physics.enable(chaser, Phaser.Physics.ARCADE);
         chaser.body.setSize(24, 24, 0, 0);
@@ -225,7 +226,7 @@ Pacman.prototype = {
 
 
         // GUARD 2
-        racer = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 4) + 12, 'guard', 0);
+        racer = this.add.sprite((this.gridsize * (29  + 3)) + 12, (this.gridsize * (4)) + 12, 'guard', 0);
         racer.anchor.set(0.5);
         this.game.physics.enable(racer, Phaser.Physics.ARCADE);
         racer.body.setSize(24, 24, 0, 0);
@@ -241,7 +242,7 @@ Pacman.prototype = {
         racer.body.velocity.x = -Utilities.Speed2;
 
         // GUARD 3
-        tracer = this.add.sprite((this.gridsize * 2) + 12, (this.gridsize * 28) + 12, 'guard', 0);
+        tracer = this.add.sprite((this.gridsize * (2  + 3)) + 12, (this.gridsize * (28)) + 12, 'guard', 0);
         tracer.anchor.set(0.5);
         this.game.physics.enable(tracer, Phaser.Physics.ARCADE);
         tracer.body.setSize(24, 24, 0, 0);
@@ -258,7 +259,7 @@ Pacman.prototype = {
 
 
         // GUARD 4
-        caribou = this.add.sprite((this.gridsize * 29) + 12, (this.gridsize * 28) + 12, 'guard', 0);
+        caribou = this.add.sprite((this.gridsize * (29  + 3)) + 12, (this.gridsize * (28)) + 12, 'guard', 0);
         caribou.anchor.set(0.5);
         this.game.physics.enable(caribou, Phaser.Physics.ARCADE);
         caribou.body.setSize(24, 24, 0, 0);
@@ -410,23 +411,23 @@ Pacman.prototype = {
         }
 
         // this.dots.callAll('revive');
-        this.pacman.x = (3 * this.gridsize) + this.gridsize / 2;
+        this.pacman.x = (6 * this.gridsize) + this.gridsize / 2;
         this.pacman.y = (1 * this.gridsize) + this.gridsize / 2;
         this.move(Phaser.RIGHT);
 
-        chaser.body.x = (this.gridsize * 2) + 12; 
+        chaser.body.x = (this.gridsize * (2 + 3)) + 12; 
         chaser.body.y = (this.gridsize * 10) + 12;
         chaser.body.velocity.x = Utilities.Speed2;
 
-        racer.body.x = (this.gridsize * 29) + 12;
+        racer.body.x = (this.gridsize * (29 + 3)) + 12;
         racer.body.y = (this.gridsize * 4) + 12;
         racer.body.velocity.x = -Utilities.Speed2;
 
-        tracer.body.x = (this.gridsize * 2) + 12;
+        tracer.body.x = (this.gridsize * (2  + 3)) + 12;
         tracer.body.y = (this.gridsize * 28) + 12;
         tracer.body.velocity.x = Utilities.Speed2;
 
-        caribou.body.x = (this.gridsize * 29) + 12;
+        caribou.body.x = (this.gridsize * (29 + 3)) + 12;
         caribou.body.y = (this.gridsize * 28) + 12;
         caribou.body.velocity.x = -Utilities.Speed2;
         
@@ -446,12 +447,12 @@ Pacman.prototype = {
 
     teleport: function () {
             if (this.pacman.x > game.world.centerX) {
-                this.pacman.x = (1 * this.gridsize) + this.gridsize / 2;
+                this.pacman.x = ((1 + 3) * this.gridsize) + this.gridsize / 2;
                 this.pacman.y = (16 * this.gridsize) + this.gridsize / 2;
                 this.move(Phaser.RIGHT);
             }
             else {
-                this.pacman.x = (29 * this.gridsize) + this.gridsize / 2;
+                this.pacman.x = ((29 + 3) * this.gridsize) + this.gridsize / 2;
                 this.pacman.y = (16 * this.gridsize) + this.gridsize / 2;
                 this.move(Phaser.LEFT);
             }

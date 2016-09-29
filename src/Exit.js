@@ -7,6 +7,11 @@ var seExit = null;
 
 var ExitState = {OPEN: 0, CLOSED: 1, GATED: 2};
 
+var nwTrain = null;
+var neTrain = null;
+var swTrain = null;
+var seTrain = null;
+
 
 var nwExitState = ExitState.CLOSED;
 var neExitState = ExitState.CLOSED;
@@ -22,10 +27,15 @@ var openProbability = 40;
 
 function StartExit() {
 
-	nwExit = game.add.sprite((1 * Utilities.TILE_SIZE), (3 * Utilities.TILE_SIZE), 'exitLights', 0);
-	neExit = game.add.sprite((30 * Utilities.TILE_SIZE), (3 * Utilities.TILE_SIZE), 'exitLights', 0);
-	swExit = game.add.sprite((1 * Utilities.TILE_SIZE), (27 * Utilities.TILE_SIZE), 'exitLights', 0);
-	seExit = game.add.sprite((30 * Utilities.TILE_SIZE), (27 * Utilities.TILE_SIZE), 'exitLights', 0);
+	nwExit = game.add.sprite(((1 + 3) * Utilities.TILE_SIZE), (3 * Utilities.TILE_SIZE), 'exitLights', 0);
+	neExit = game.add.sprite(((30 + 3) * Utilities.TILE_SIZE), (3 * Utilities.TILE_SIZE), 'exitLights', 0);
+	swExit = game.add.sprite(((1 + 3) * Utilities.TILE_SIZE), (27 * Utilities.TILE_SIZE), 'exitLights', 0);
+	seExit = game.add.sprite(((30 + 3) * Utilities.TILE_SIZE), (27 * Utilities.TILE_SIZE), 'exitLights', 0);
+
+	nwTrain = game.add.sprite(leftRails.x, leftRails.y, 'train', 0);
+	swTrain = game.add.sprite(leftRails.x, leftRails.y + 575, 'train', 0);
+	neTrain = game.add.sprite(rightRails.x, rightRails.y, 'train', 0);
+	seTrain = game.add.sprite(rightRails.x, rightRails.y + 575, 'train', 0);
 
 	console.log("Added sprites?");
 
