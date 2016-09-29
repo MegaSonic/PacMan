@@ -37,6 +37,12 @@ function StartExit() {
 	neTrain = game.add.sprite(rightRails.x, rightRails.y, 'train', 0);
 	seTrain = game.add.sprite(rightRails.x, rightRails.y + 575, 'train', 0);
 
+
+	nwTrain.kill();
+	swTrain.kill();
+	neTrain.kill();
+	seTrain.kill();
+
 	console.log("Added sprites?");
 
 	console.log(Utilities.TILE_SIZE);
@@ -71,6 +77,7 @@ function StartExit() {
 function CheckAllDoors() {
 	// If the gates pass the check and are open
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
+		nwTrain.revive();
 		// If the player doesn't have enough money
 		if (currentDots < requiredDots) {
 			console.log('playing nw gated!');
@@ -87,9 +94,11 @@ function CheckAllDoors() {
 	else {
 		nwExitState = ExitState.CLOSED;
 		nwExit.play('close');
+		nwTrain.kill();
 	}
 
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
+		swTrain.revive();
 		if (currentDots < requiredDots) {
 			console.log('playing sw gated!');
 			swExit.animations.stop();
@@ -106,9 +115,11 @@ function CheckAllDoors() {
 		swExit.animations.stop();
 		swExitState = ExitState.CLOSED;
 		swExit.play('close');
+		swTrain.kill();
 	}
 
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
+		neTrain.revive();
 		if (currentDots < requiredDots) {
 			console.log('playing ne gated!');
 			neExit.animations.stop();
@@ -125,9 +136,11 @@ function CheckAllDoors() {
 		neExit.animations.stop();
 		neExitState = ExitState.CLOSED;
 		neExit.play('close');
+		neTrain.kill();
 	}
 
 	if (game.rnd.integerInRange(1, 100) < openProbability) {
+		seTrain.revive();
 		if (currentDots < requiredDots) {
 			seExit.animations.stop();
 			console.log('playing se gated!');
@@ -145,6 +158,7 @@ function CheckAllDoors() {
 		seExit.animations.stop();
 		seExitState = ExitState.CLOSED;
 		seExit.play('close');
+		seTrain.kill();
 	}
 
 	exitTimer = exitTime;
