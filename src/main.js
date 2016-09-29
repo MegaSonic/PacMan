@@ -526,6 +526,7 @@ Pacman.prototype = {
 
         
         sprintCounter = 0;
+        this.speed = 120;
 
         livesText.text = this.lives;
     },
@@ -1765,7 +1766,7 @@ Pacman.prototype = {
             this.speed = 120
             sprintCounter--;
         }
-        else if(sprintCounter > 0){
+        else if (sprintCounter > 0) {
             this.pause();
             sprintCounter--;
         }
