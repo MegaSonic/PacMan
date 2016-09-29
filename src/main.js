@@ -440,7 +440,7 @@ Pacman.prototype = {
 
         text.text = '$' + dollarScore;
 
-        if (currentDots > requiredDots) {
+        if (currentDots >= requiredDots) {
             text.setStyle({ font: "24px Arial", fill: "#00ff00", align: "center" });
         }
     },
