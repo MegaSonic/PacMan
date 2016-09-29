@@ -177,8 +177,8 @@ Pacman.prototype = {
         this.spray = this.add.physicsGroup();
         map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
 
-        map.setCollisionByExclusion([this.safetile, 21, 4, 24, 28, 32], true, mapLayer);
-        map.setCollision(5,true,mapLayer)
+        map.setCollisionByExclusion([this.safetile, 21, 4, 24, 28], true, mapLayer);
+        map.setCollision(32,true,mapLayer)
 
         this.pacman = this.add.sprite((6 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
@@ -1749,7 +1749,7 @@ Pacman.prototype = {
 
         }
         else {
-            map.setCollision(5, false, mapLayer)
+            map.setCollision(32, false, mapLayer)
         }
         
         this.chaserSpeedUp();
