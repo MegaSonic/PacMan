@@ -37,14 +37,13 @@ var titleState = {
 	create: function () {
 		startingSound = game.add.audio('start');
 		gameOverSound = game.add.audio('gameOver');
+		musicLoop = game.add.audio('musicLoop');
 
 		titleImage = game.add.sprite(0, 0, 'titleImage', 0);
 		titleImage.animations.add('play', [0, 1, 2, 3], 10, true);
 		game.stage.backgroundColor = '#000000';
-		inputButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 		rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-        inputButton.onDown.add(this.startGame, this);
         leftButton.onDown.add(this.startGameMale, this);
         rightButton.onDown.add(this.startGameFemale, this);
         titleImage.play('play');
@@ -59,12 +58,14 @@ var titleState = {
 
 	startGameMale: function() {
 		playerGender = PlayerState.MALE;
+		startingSound.stop();
 		game.state.start('Game');
 		
 	},
 
 	startGameFemale: function() {
 		playerGender = PlayerState.FEMALE;
+		startingSound.stop();
 		game.state.start('Game');
 		
 	},

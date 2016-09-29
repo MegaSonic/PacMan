@@ -308,6 +308,9 @@ Pacman.prototype = {
 
         textGroup = game.add.group();
         textGroup.add(text);
+
+        musicLoop.loop = true;
+        musicLoop.play();
     },
 
     checkKeys: function () {
@@ -448,6 +451,7 @@ Pacman.prototype = {
                 this.lives = 3;
                 currentDots = 0;
                 score = 0;
+                musicLoop.stop();
                 game.state.start('GameOver');
                 //game.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ff0044", align: "center" });
                 // textGroup.add.text(game.world.centerX, game.world.centerY - 200, "Game Over", { font: "48px Arial", fill: "#ffffff", align: "center" });
