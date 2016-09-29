@@ -38,6 +38,7 @@ var rightRails;
 
 var redTint;
 
+var fireSound;
 
 //CHASER VARS
 var chaser;
@@ -125,7 +126,7 @@ Pacman.prototype = {
 
         
         this.load.image('dot', 'assets/dot.png');
-        this.load.image('coin', 'assets/coin.png');
+        this.load.image('coin', 'assets/coin2.png');
 
         //this.load.tilemap('map', 'assets/pac_maze.json', null, Phaser.Tilemap.TILED_JSON);
         //this.load.image('tiles', 'assets/tile_set.png');
@@ -169,8 +170,8 @@ Pacman.prototype = {
         map.createFromTiles(21, 17, 'coin', secondLayer, this.dots);
 
         //  The dots will need to be offset by 12px to put them back in the middle of the grid
-        this.dots.setAll('x', 12, false, false, 1);
-        this.dots.setAll('y', 12, false, false, 1);
+        //this.dots.setAll('x', 12, false, false, 1);
+        //this.dots.setAll('y', 12, false, false, 1);
 
         this.spray = this.add.physicsGroup();
         map.createFromTiles(4, 4, 'dot', mapLayer, this.spray);
@@ -191,6 +192,7 @@ Pacman.prototype = {
         this.physics.arcade.enable(this.pacman);
         this.pacman.body.setSize(24, 24, 0, 0);
         this.cursors = this.input.keyboard.createCursorKeys();
+
 
 
 
@@ -284,12 +286,20 @@ Pacman.prototype = {
         textGroup.add(text);
 
 
+        if (playerGender == PlayerState.MALE) {
+            this.pacman.loadTexture('playerm', 0);
+        }
+        else {
+            this.pacman.loadTexture('playerf', 0);
+        }
 
 
         StartExit();
 
         redTint = this.add.sprite(0, 0, 'redTint', 0);
         redTint.kill();
+
+        fireSound = game.add.audio('fire');
     },
 
     checkKeys: function () {
