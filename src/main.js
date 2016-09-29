@@ -22,10 +22,14 @@ var levelWin = false;
 var stage = 1;
 var sprintButton;
 var sprintCounter;
-var topRightAlarm
+var topRightAlarm;
 var topLeftAlarm;
 var bottomLeftAlarm;
 var bottomRightAlarm;
+var topRightAlarmUsed;
+var topLeftAlarmUsed;
+var bottomLeftAlarmUsed;
+var bottomRightAlarmUsed;
 
 var requiredDots = 100;
 var currentDots = 0;
@@ -155,6 +159,7 @@ Pacman.prototype = {
         game.load.image('train', 'assets/Train_front.png');
         game.load.spritesheet('guard', 'assets/police.png', 40, 40);
         game.load.image('redTint', 'assets/redTint.png');
+        game.load.image('alarmUsed', 'assets/alarmUsed.png');
     },
 
     
@@ -169,6 +174,16 @@ Pacman.prototype = {
         mapLayer = map.createLayer('Tile Layer 1');
         secondLayer = map.createLayer('Tile Layer 2');
         mapLayer.resizeWorld();
+
+        topLeftAlarmUsed = this.add.sprite((8 * 24), (3 * 24), 'alarmUsed', 0);
+        topRightAlarmUsed = this.add.sprite((29 * 24), (3 * 24), 'alarmUsed', 0);
+        bottomLeftAlarmUsed = this.add.sprite((10 * 24), (27 * 24), 'alarmUsed', 0);
+        bottomRightAlarmUsed = this.add.sprite((28 * 24), (27 * 24), 'alarmUsed', 0);
+
+        topLeftAlarmUsed.kill();
+        topRightAlarmUsed.kill();
+        bottomLeftAlarmUsed.kill();
+        bottomRightAlarmUsed.kill();
 
         this.dots = this.add.physicsGroup();
         map.createFromTiles(21, 17, 'coin', secondLayer, this.dots);
@@ -442,6 +457,12 @@ Pacman.prototype = {
             topRightAlarm = true;
             bottomRightAlarm = true;
             bottomTopAlarm = true;
+
+            topLeftAlarmUsed.kill();
+            topRightAlarmUsed.kill();
+            bottomLeftAlarmUsed.kill();
+            bottomRightAlarmUsed.kill();
+
             
         }
         else {
@@ -1624,6 +1645,8 @@ Pacman.prototype = {
                 caribouReturn = true;
             }
             topLeftAlarm = false;
+            topLeftAlarmUsed.revive();
+            
         }
 
         if (this.pacman.x == 29 * 24 + 12 && this.pacman.y == 4 * 24 + 12) {
@@ -1636,6 +1659,7 @@ Pacman.prototype = {
                 caribouReturn = true;
             }
             topRightAlarm = false;
+            topRightAlarmUsed.revive();
         }
 
         if (this.pacman.x == 10 * 24 + 12 && this.pacman.y == 28 * 24 + 12) {
@@ -1648,6 +1672,7 @@ Pacman.prototype = {
                 caribouReturn = true;
             }
             bottomLeftAlarm = false;
+            bottomLeftAlarmUsed.revive();
         }
 
         if (this.pacman.x == 28 * 24 + 12 && this.pacman.y == 28 * 24 + 12) {
@@ -1660,6 +1685,7 @@ Pacman.prototype = {
                 caribouReturn = true;
             }
             bottomRightAlarm = false;
+            bottomRightAlarmUsed.revive();
         }
 
     },
