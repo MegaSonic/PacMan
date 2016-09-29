@@ -279,6 +279,12 @@ Pacman.prototype = {
         textGroup.add(text);
 
 
+        if (playerGender == PlayerState.MALE) {
+            this.pacman.loadTexture('playerm', 0);
+        }
+        else {
+            this.pacman.loadTexture('playerf', 0);
+        }
 
 
         StartExit();
