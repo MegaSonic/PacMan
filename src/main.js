@@ -1741,6 +1741,9 @@ Pacman.prototype = {
         
         this.powerPellet();
         
+        if (!musicLoop.isPlaying) {
+            musicLoop.play();
+        }
         
         powerCounter--;
        
