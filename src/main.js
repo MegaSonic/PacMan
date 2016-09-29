@@ -176,15 +176,12 @@ Pacman.prototype = {
         map.setCollisionByExclusion([this.safetile, 21, 4, 24, 28, 32], true, mapLayer);
         map.setCollision(5,true,mapLayer)
 
-        console.log("After collision by exclusion");
         this.pacman = this.add.sprite((6 * 24) + 12, (1 * 24) + 12, 'playerm', 0);
         this.pacman.anchor.set(0.5);
         this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
         this.pacman.animations.add('walkDown', [0, 1, 2, 3], 12, true);
         this.pacman.animations.add('walkRight', [8, 9, 10, 11], 12, true);
         this.pacman.animations.add('walkUp', [4, 5, 6, 7], 12, true);
-
-        console.log("after pacman added");
 
         this.physics.arcade.enable(this.pacman);
         this.pacman.body.setSize(24, 24, 0, 0);
@@ -415,7 +412,7 @@ Pacman.prototype = {
         score += 0.1
         dollarScore = score.toFixed(2)
         currentDots++;
-        console.log(currentDots);
+        // console.log(currentDots);
 
         text.text = '$' + dollarScore;
 
@@ -1023,14 +1020,14 @@ Pacman.prototype = {
     checkStairsCollision: function() {
         if (this.pacman.x == leftStairs.x * 24 + 12 && this.pacman.y == leftStairs.y * 24 + 12) {
             if (!this.justTeleported) {
-                console.log("Took left stairs!");
+                //console.log("Took left stairs!");
                 this.justTeleported = true;
                 this.teleport();
             }
         }
         else if (this.pacman.x == rightStairs.x * 24 + 12 && this.pacman.y == rightStairs.y * 24 + 12) {
             if (!this.justTeleported) {
-                console.log("Took right stairs!");
+                //console.log("Took right stairs!");
                 this.justTeleported = true;
                 this.teleport();
             }
@@ -1565,7 +1562,7 @@ Pacman.prototype = {
     checkExitCollision: function () {
         if (this.pacman.x == nwExit.x + 12 && this.pacman.y == nwExit.y + 36) {
             if (nwExitState == ExitState.OPEN) {
-                console.log("Took nw exit!");
+                //console.log("Took nw exit!");
                 levelWin = true;
                 this.die();
             }
@@ -1573,7 +1570,7 @@ Pacman.prototype = {
 
         else if (this.pacman.x == neExit.x + 12 && this.pacman.y == neExit.y + 36) {
             if (neExitState == ExitState.OPEN) {
-                console.log("Took ne exit!");
+                //console.log("Took ne exit!");
                 levelWin = true;
                 this.die();
             }
@@ -1581,7 +1578,7 @@ Pacman.prototype = {
 
         else if (this.pacman.x == swExit.x + 12 && this.pacman.y == swExit.y + 36) {
             if (swExitState == ExitState.OPEN) {
-                console.log("Took sw exit!");
+                //console.log("Took sw exit!");
                 levelWin = true;
                 this.die();
             }
@@ -1589,7 +1586,7 @@ Pacman.prototype = {
 
         else if (this.pacman.x == seExit.x + 12 && this.pacman.y == seExit.y + 36) {
             if (seExitState == ExitState.OPEN) {
-                console.log("Took se exit!");
+                //console.log("Took se exit!");
                 levelWin = true;
                 this.die();
             }
